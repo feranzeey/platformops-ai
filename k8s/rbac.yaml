@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: platformops-ai
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: platformops-ai-role
+
+rules:
+- apiGroups: [""]
+  resources:
+    - pods
+    - pods/log
+    - services
+    - nodes
+    - namespaces
+    - events
+  verbs:
+    - get
+    - list
+    - watch
+
+- apiGroups: ["apps"]
+  resources:
+    - deployments
+  verbs:
+    - get
+    - list
+    - watch
+    - patch
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: platformops-ai-binding
+
+subjects:
+- kind: ServiceAccount
+  name: platformops-ai
+  namespace: default
+
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: platformops-ai-role

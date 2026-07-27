@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+
+metadata:
+  name: platformops-ai-service
+
+spec:
+  selector:
+    app: platformops-ai
+
+  ports:
+    - port: 80
+      targetPort: 5000
+
+  type: NodePort

@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: platformops-ai
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: platformops-ai
+
+  template:
+    metadata:
+      labels:
+        app: platformops-ai
+
+    spec:
+      serviceAccountName: platformops-ai
+
+      containers:
+        - name: platformops-ai
+          image: platformops-ai:v6
+          imagePullPolicy: Never
+
+          ports:
+            - containerPort: 5000

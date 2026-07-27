@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+
+metadata:
+  name: platformops-ai
+
+spec:
+  rules:
+  - host: platformops.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: platformops-ai-service
+            port:
+              number: 80

@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlatformOps AI</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>🤖 PlatformOps AI</h1>
+        <p>AI-powered Kubernetes Incident Response Dashboard</p>
+
+        <form method="POST">
+
+            <input
+                type="text"
+                name="question"
+                placeholder="Why is my application down?"
+                required>
+
+            <button type="submit">
+                🔍 Analyze Cluster
+            </button>
+
+        </form>
+
+        {% if report %}
+
+        <!-- ========================= -->
+        <!-- Cluster Health -->
+        <!-- ========================= -->
+
+        <hr>
+
+        <h2>🩺 Cluster Health</h2>
+
+        <div class="card">
+
+            <h1>{{ report.health.score }}/100</h1>
+
+            {% if report.health.status == "Healthy" %}
+
+            <h2 style="color:green;">
+                🟢 {{ report.health.status }}
+            </h2>
+
+            {% elif report.health.status == "Warning" %}
+
+            <h2 style="color:orange;">
+                🟠 {{ report.health.status }}
+            </h2>
+
+            {% else %}
+
+            <h2 style="color:red;">
+                🔴 {{ report.health.status }}
+            </h2>
+
+            {% endif %}
+
+            <progress
+                value="{{ report.health.score }}"
+                max="100"
+                style="width:100%; height:30px;">
+            </progress>
+
+            <h3>Health Breakdown</h3>
+
+            <table border="1" cellpadding="8" cellspacing="0" width="100%">
+
+                <tr>
+                    <th>Category</th>
+                    <th>Score</th>
+                </tr>
+
+                <tr>
+                    <td>Pods</td>
+                    <td>{{ report.health.details.pods }}/20</td>
+                </tr>
+
+                <tr>
+                    <td>Deployments</td>
+                    <td>{{ report.health.details.deployments }}/25</td>
+                </tr>
+
+                <tr>
+                    <td>Nodes</td>
+                    <td>{{ report.health.details.nodes }}/20</td>
+                </tr>
+
+                <tr>
+                    <td>Events</td>
+                    <td>{{ report.health.details.events }}/20</td>
+                </tr>
+
+                <tr>
+                    <td>Prometheus</td>
+                    <td>{{ report.health.details.prometheus }}/15</td>
+                </tr>
+
+            </table>
+
+        </div>
+
+        <!-- ========================= -->
+        <!-- Cluster Summary -->
+        <!-- ========================= -->
+
+        <hr>
+
+        <h2>📊 Cluster Summary</h2>
+
+        <div class="cards">
+
+            <div class="card">
+                <h3>Total Pods</h3>
+                <p>{{ report.pods.total }}</p>
+            </div>
+
+            <div class="card">
+                <h3>Healthy Pods</h3>
+                <p>{{ report.pods.healthy }}</p>
+            </div>
+
+            <div class="card">
+                <h3>Problem Pods</h3>
+                <p>{{ report.pods.problem_count }}</p>
+            </div>
+
+        </div>
+
+        <hr>
+
+        <h2>☸️ Namespaces</h2>
+
+        <pre>{{ report.namespaces }}</pre>
+
+        <hr>
+
+        <h2>🚀 Deployments</h2>
+
+        <pre>{{ report.deployments }}</pre>
+
+        <hr>
+
+        <h2>🌐 Services</h2>
+
+        <pre>{{ report.services }}</pre>
+
+        <hr>
+
+        <h2>🖥️ Nodes</h2>
+
+        <pre>{{ report.nodes }}</pre>
+
+        {% if report.pods.problems %}
+
+        <hr>
+
+        <h2>⚠️ Problem Pods</h2>
+
+        <pre>
+{% for pod in report.pods.problems %}
+{{ pod }}
+{% endfor %}
+        </pre>
+
+        {% else %}
+
+        <hr>
+
+        <h2>✅ No Problem Pods Detected</h2>
+
+        {% endif %}
+
+        {% if report.pods.logs %}
+
+        <hr>
+
+        <h2>📄 Pod Logs</h2>
+
+        <pre>{{ report.pods.logs }}</pre>
+
+        {% endif %}
+
+        <hr>
+
+        <h2>📋 Kubernetes Events</h2>
+
+        <table border="1" cellpadding="8" cellspacing="0" width="100%">
+
+            <thead>
+
+                <tr>
+                    <th>Namespace</th>
+                    <th>Type</th>
+                    <th>Reason</th>
+                    <th>Message</th>
+                    <th>Time</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for event in report.events %}
+
+                <tr>
+
+                    <td>{{ event.namespace }}</td>
+
+                    <td>
+
+                        {% if event.type == "Warning" %}
+
+                        🔴 Warning
+
+                        {% else %}
+
+                        🟢 Normal
+
+                        {% endif %}
+
+                    </td>
+
+                    <td>{{ event.reason }}</td>
+
+                    <td>{{ event.message }}</td>
+
+                    <td>{{ event.time }}</td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+        <hr>
+
+        <h2>📈 Prometheus Metrics</h2>
+
+        <pre>{{ report.metrics | tojson(indent=2) }}</pre>
+
+        <hr>
+
+        <h2>📝 Latest GitHub Commit</h2>
+
+        {% if report.github.error %}
+
+        <p>{{ report.github.error }}</p>
+
+        {% else %}
+
+        <p><strong>Author:</strong> {{ report.github.author }}</p>
+
+        <p><strong>Date:</strong> {{ report.github.date }}</p>
+
+        <p><strong>Message:</strong> {{ report.github.message }}</p>
+
+        {% endif %}
+
+        {% if report.analysis %}
+
+        <!-- ========================= -->
+        <!-- Active Incident -->
+        <!-- ========================= -->
+
+        <hr>
+
+        <h2>🚨 Active Incident</h2>
+
+        <div class="card">
+
+            <h3>📋 Incident Summary</h3>
+
+            <p>{{ report.analysis.incident_summary }}</p>
+
+            <h3>🔥 Severity</h3>
+
+            {% if report.analysis.severity == "CRITICAL" %}
+
+            <h2 style="color:darkred;">🔴 CRITICAL</h2>
+
+            {% elif report.analysis.severity == "HIGH" %}
+
+            <h2 style="color:red;">🔴 HIGH</h2>
+
+            {% elif report.analysis.severity == "MEDIUM" %}
+
+            <h2 style="color:orange;">🟠 MEDIUM</h2>
+
+            {% else %}
+
+            <h2 style="color:green;">🟢 LOW</h2>
+
+            {% endif %}
+
+            <h3>🔍 Root Cause</h3>
+
+            <p>{{ report.analysis.root_cause }}</p>
+
+            <h3>🎯 Confidence</h3>
+
+            <p>{{ report.analysis.confidence }}</p>
+
+        </div>
+
+        <!-- ========================= -->
+        <!-- Recommended Actions -->
+        <!-- ========================= -->
+
+        <div class="card">
+
+            <h3>💡 Recommended Actions</h3>
+
+            <ul>
+
+                {% for recommendation in report.analysis.recommendation %}
+
+                <li>{{ recommendation }}</li>
+
+                {% endfor %}
+
+            </ul>
+
+        </div>
+
+        <!-- ========================= -->
+        <!-- Prevention -->
+        <!-- ========================= -->
+
+        {% if report.analysis.prevention %}
+
+        <div class="card">
+
+            <h3>🛡 Prevention</h3>
+
+            <ul>
+
+                {% for item in report.analysis.prevention %}
+
+                <li>{{ item }}</li>
+
+                {% endfor %}
+
+            </ul>
+
+        </div>
+
+        {% endif %}
+
+        <!-- ========================= -->
+        <!-- Suggested Commands -->
+        <!-- ========================= -->
+
+        {% if report.analysis.fix_commands %}
+
+        <div class="card">
+
+            <h3>💻 Suggested Commands</h3>
+
+            {% for cmd in report.analysis.fix_commands %}
+
+            <pre>{{ cmd }}</pre>
+
+            {% endfor %}
+
+        </div>
+
+        {% endif %}
+
+        <!-- ========================= -->
+        <!-- Auto Remediation -->
+        <!-- ========================= -->
+
+        <div class="card">
+
+            <h3>⚡ Auto Remediation</h3>
+
+            <a href="/repair/{{ report.analysis.affected_pod or 'nginx-app' }}">
+
+                <button>
+                    ⚡ Execute Fix
+                </button>
+
+            </a>
+
+        </div>
+
+        {% endif %}
+
+        <!-- ========================= -->
+        <!-- Incident Timeline -->
+        <!-- ========================= -->
+
+        <hr>
+
+        <h2>📜 Incident Timeline</h2>
+
+        <div class="card">
+
+            {% if report.timeline %}
+
+            <ul>
+
+                {% for item in report.timeline %}
+
+                <li>
+
+                    {% if item.status == "resolved" %}
+                    🟢
+                    {% elif item.status == "open" %}
+                    🔴
+                    {% else %}
+                    🟠
+                    {% endif %}
+
+                    {{ item.date }} —
+                    {{ item.incident.pod if item.incident else "unknown" }}:
+                    {{ item.problem }}
+                    ({{ item.status }})
+
+                </li>
+
+                {% endfor %}
+
+            </ul>
+
+            {% else %}
+
+            <p>No incidents recorded yet.</p>
+
+            {% endif %}
+
+        </div>
+
+        <!-- ========================= -->
+        <!-- Live Grafana Dashboard -->
+        <!-- ========================= -->
+
+        <hr>
+
+        <h2>📈 Live Grafana Dashboard</h2>
+
+        <iframe
+            src="http://localhost:3000/d/YOUR_DASHBOARD_UID?orgId=1&kiosk"
+            width="100%"
+            height="700"
+            frameborder="0">
+        </iframe>
+
+        <hr>
+
+        <h2>⚡ Quick Actions</h2>
+
+        <div class="actions">
+
+            <button onclick="window.open('http://localhost:3000','_blank')">
+                📊 Open Grafana
+            </button>
+
+            <button onclick="window.open('http://localhost:8080','_blank')">
+                🚀 Open ArgoCD
+            </button>
+
+            <button onclick="location.reload()">
+                🔄 Refresh Dashboard
+            </button>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</body>
+
+</html>
