@@ -1,486 +1,674 @@
-<!DOCTYPE html>
-<html lang="en">
+<!-- ====================================================== -->
+<!-- 🤖 PlatformOps AI Deployment Investigation -->
+<!-- ====================================================== -->
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PlatformOps AI</title>
+{% if report.investigations %}
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
+<hr>
 
-<body>
+<h2>🤖 PlatformOps AI Deployment Investigation</h2>
 
-    <div class="container">
+<p>PlatformOps AI automatically investigated unhealthy Kubernetes deployments and generated the following incident reports.</p>
 
-        <h1>🤖 PlatformOps AI</h1>
-        <p>AI-powered Kubernetes Incident Response Dashboard</p>
+{% for item in report.investigations %}
 
-        <form method="POST">
+<div class="card">
 
-            <input
-                type="text"
-                name="question"
-                placeholder="Why is my application down?"
-                required>
+    <h3>🚀 {{ item.title }}</h3>
 
-            <button type="submit">
-                🔍 Analyze Cluster
-            </button>
+    <hr>
 
-        </form>
+    <h4>🧠 Root Cause Analysis</h4>
 
-        {% if report %}
+    <table>
 
-        <!-- ========================= -->
-        <!-- Cluster Health -->
-        <!-- ========================= -->
+        <tr>
+            <th width="220">Issue</th>
+            <td>{{ item.issue }}</td>
+        </tr>
 
-        <hr>
+        {% if item.description %}
+        <tr>
+            <th>Description</th>
+            <td>{{ item.description }}</td>
+        </tr>
+        {% endif %}
 
-        <h2>🩺 Cluster Health</h2>
+        <tr>
+            <th>Business Impact</th>
+            <td>{{ item.impact }}</td>
+        </tr>
 
-        <div class="card">
+        <tr>
+            <th>Severity</th>
 
-            <h1>{{ report.health.score }}/100</h1>
+            <td>
 
-            {% if report.health.status == "Healthy" %}
+                {% if item.severity == "CRITICAL" %}
+                    <span class="error">⚫ CRITICAL</span>
 
-            <h2 style="color:green;">
-                🟢 {{ report.health.status }}
-            </h2>
+                {% elif item.severity == "HIGH" %}
+                    <span class="error">🔴 HIGH</span>
 
-            {% elif report.health.status == "Warning" %}
+                {% elif item.severity == "MEDIUM" %}
+                    <span class="warning">🟠 MEDIUM</span>
 
-            <h2 style="color:orange;">
-                🟠 {{ report.health.status }}
-            </h2>
+                {% else %}
+                    <span class="success">🟢 LOW</span>
 
-            {% else %}
+                {% endif %}
 
-            <h2 style="color:red;">
-                🔴 {{ report.health.status }}
-            </h2>
+            </td>
 
-            {% endif %}
+        </tr>
 
-            <progress
-                value="{{ report.health.score }}"
-                max="100"
-                style="width:100%; height:30px;">
-            </progress>
+        {% if item.confidence %}
 
-            <h3>Health Breakdown</h3>
+        <tr>
 
-            <table border="1" cellpadding="8" cellspacing="0" width="100%">
+            <th>AI Confidence</th>
 
-                <tr>
-                    <th>Category</th>
-                    <th>Score</th>
-                </tr>
+            <td>{{ item.confidence }}</td>
 
-                <tr>
-                    <td>Pods</td>
-                    <td>{{ report.health.details.pods }}/20</td>
-                </tr>
+        </tr>
 
-                <tr>
-                    <td>Deployments</td>
-                    <td>{{ report.health.details.deployments }}/25</td>
-                </tr>
+        {% endif %}
 
-                <tr>
-                    <td>Nodes</td>
-                    <td>{{ report.health.details.nodes }}/20</td>
-                </tr>
+    </table>
 
-                <tr>
-                    <td>Events</td>
-                    <td>{{ report.health.details.events }}/20</td>
-                </tr>
+    <hr>
 
-                <tr>
-                    <td>Prometheus</td>
-                    <td>{{ report.health.details.prometheus }}/15</td>
-                </tr>
+    <h4>🔎 Evidence</h4>
 
-            </table>
+    <ul>
 
-        </div>
+        {% for evidence in item.evidence %}
 
-        <!-- ========================= -->
-        <!-- Cluster Summary -->
-        <!-- ========================= -->
+        <li>{{ evidence }}</li>
 
-        <hr>
+        {% endfor %}
 
-        <h2>📊 Cluster Summary</h2>
+    </ul>
 
-        <div class="cards">
+    <hr>
 
-            <div class="card">
-                <h3>Total Pods</h3>
-                <p>{{ report.pods.total }}</p>
-            </div>
+    <h4>💡 AI Recommendation</h4>
 
-            <div class="card">
-                <h3>Healthy Pods</h3>
-                <p>{{ report.pods.healthy }}</p>
-            </div>
+    {% if item.recommended_action %}
+    <p>{{ item.recommended_action }}</p>
+    {% endif %}
 
-            <div class="card">
-                <h3>Problem Pods</h3>
-                <p>{{ report.pods.problem_count }}</p>
-            </div>
+    {% if item.recommendations %}
+    <ul>
+        {% for recommendation in item.recommendations %}
+        <li>{{ recommendation }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
 
-        </div>
+    <hr>
 
-        <hr>
+    <h4>💻 Recommended Commands</h4>
 
-        <h2>☸️ Namespaces</h2>
+    <pre>{{ item.command }}</pre>
 
-        <pre>{{ report.namespaces }}</pre>
+    {% if item.title %}
+    <a href="/repair/{{ item.title }}">
+        <button>🔧 Auto Repair Deployment</button>
+    </a>
+    {% endif %}
 
-        <hr>
+</div>
 
-        <h2>🚀 Deployments</h2>
+<br>
 
-        <pre>{{ report.deployments }}</pre>
-
-        <hr>
-
-        <h2>🌐 Services</h2>
-
-        <pre>{{ report.services }}</pre>
-
-        <hr>
-
-        <h2>🖥️ Nodes</h2>
-
-        <pre>{{ report.nodes }}</pre>
-
-        {% if report.pods.problems %}
-
-        <hr>
-
-        <h2>⚠️ Problem Pods</h2>
-
-        <pre>
-{% for pod in report.pods.problems %}
-{{ pod }}
 {% endfor %}
-        </pre>
 
-        {% else %}
+{% endif %}
 
-        <hr>
+<!-- ====================================================== -->
+<!-- 🕒 AI Incident Timeline -->
+<!-- ====================================================== -->
 
-        <h2>✅ No Problem Pods Detected</h2>
+{% if report.timeline %}
 
-        {% endif %}
+<hr>
 
-        {% if report.pods.logs %}
+<h2>🕒 AI Incident Timeline</h2>
 
-        <hr>
+<p>
+PlatformOps AI reconstructed the sequence of Kubernetes events that led
+to the current cluster state.
+</p>
 
-        <h2>📄 Pod Logs</h2>
+{% if report.timeline_summary %}
 
-        <pre>{{ report.pods.logs }}</pre>
+<div class="card">
 
-        {% endif %}
+<h3>🧠 AI Timeline Summary</h3>
 
-        <hr>
+<table>
 
-        <h2>📋 Kubernetes Events</h2>
+<tr>
+<th width="220">Summary</th>
+<td>{{ report.timeline_summary.summary }}</td>
+</tr>
 
-        <table border="1" cellpadding="8" cellspacing="0" width="100%">
+<tr>
+<th>Current State</th>
+<td>{{ report.timeline_summary.current_state }}</td>
+</tr>
 
-            <thead>
+<tr>
+<th>Severity</th>
 
-                <tr>
-                    <th>Namespace</th>
-                    <th>Type</th>
-                    <th>Reason</th>
-                    <th>Message</th>
-                    <th>Time</th>
-                </tr>
+<td>
 
-            </thead>
+{% if report.timeline_summary.severity == "CRITICAL" %}
+⚫ Critical
 
-            <tbody>
+{% elif report.timeline_summary.severity == "HIGH" %}
+🔴 High
 
-                {% for event in report.events %}
+{% elif report.timeline_summary.severity == "MEDIUM" %}
+🟠 Medium
 
-                <tr>
+{% else %}
+🟢 Low
 
-                    <td>{{ event.namespace }}</td>
+{% endif %}
 
-                    <td>
+</td>
 
-                        {% if event.type == "Warning" %}
+</tr>
 
-                        🔴 Warning
+<tr>
+<th>Total Events</th>
+<td>{{ report.timeline_summary.events }}</td>
+</tr>
 
-                        {% else %}
+</table>
 
-                        🟢 Normal
+</div>
 
-                        {% endif %}
+<br>
 
-                    </td>
+{% endif %}
 
-                    <td>{{ event.reason }}</td>
+{% for event in report.timeline %}
 
-                    <td>{{ event.message }}</td>
+<div class="card">
 
-                    <td>{{ event.time }}</td>
+<h3>{{ event.icon }} {{ event.time }}</h3>
 
-                </tr>
+<table>
 
-                {% endfor %}
+<tr>
+<th width="220">Namespace</th>
+<td>{{ event.namespace }}</td>
+</tr>
 
-            </tbody>
+<tr>
+<th>Resource</th>
+<td>{{ event.resource }}</td>
+</tr>
 
-        </table>
+<tr>
+<th>Resource Type</th>
+<td>{{ event.kind }}</td>
+</tr>
 
-        <hr>
+<tr>
+<th>Event</th>
+<td><strong>{{ event.event }}</strong></td>
+</tr>
 
-        <h2>📈 Prometheus Metrics</h2>
+<tr>
+<th>Description</th>
+<td>{{ event.message }}</td>
+</tr>
 
-        <pre>{{ report.metrics | tojson(indent=2) }}</pre>
+<tr>
+<th>Severity</th>
 
-        <hr>
+<td>
 
-        <h2>📝 Latest GitHub Commit</h2>
+{% if event.severity == "CRITICAL" %}
+⚫ Critical
 
-        {% if report.github.error %}
+{% elif event.severity == "HIGH" %}
+🔴 High
 
-        <p>{{ report.github.error }}</p>
+{% elif event.severity == "MEDIUM" %}
+🟠 Medium
 
-        {% else %}
+{% else %}
+🟢 Low
 
-        <p><strong>Author:</strong> {{ report.github.author }}</p>
+{% endif %}
 
-        <p><strong>Date:</strong> {{ report.github.date }}</p>
+</td>
 
-        <p><strong>Message:</strong> {{ report.github.message }}</p>
+</tr>
 
-        {% endif %}
+</table>
 
-        {% if report.analysis %}
+</div>
 
-        <!-- ========================= -->
-        <!-- Active Incident -->
-        <!-- ========================= -->
+<div style="text-align:center;font-size:28px;padding:5px;">⬇️</div>
 
-        <hr>
+{% endfor %}
 
-        <h2>🚨 Active Incident</h2>
+{% endif %}
 
-        <div class="card">
+<hr>
 
-            <h3>📋 Incident Summary</h3>
+<h2>🚀 Kubernetes Deployments</h2>
 
-            <p>{{ report.analysis.incident_summary }}</p>
+<table>
 
-            <h3>🔥 Severity</h3>
+<thead>
 
-            {% if report.analysis.severity == "CRITICAL" %}
+<tr>
 
-            <h2 style="color:darkred;">🔴 CRITICAL</h2>
+<th>Namespace</th>
+<th>Deployment</th>
+<th>Ready</th>
+<th>Health</th>
+<th>Severity</th>
+<th>Restarts</th>
+<th>Warnings</th>
 
-            {% elif report.analysis.severity == "HIGH" %}
+</tr>
 
-            <h2 style="color:red;">🔴 HIGH</h2>
+</thead>
 
-            {% elif report.analysis.severity == "MEDIUM" %}
+<tbody>
 
-            <h2 style="color:orange;">🟠 MEDIUM</h2>
+{% for deployment in report.deployments %}
 
-            {% else %}
+<tr>
 
-            <h2 style="color:green;">🟢 LOW</h2>
+<td>{{ deployment.namespace }}</td>
+<td><strong>{{ deployment.name }}</strong></td>
+<td>{{ deployment.ready }}</td>
 
-            {% endif %}
+<td>
 
-            <h3>🔍 Root Cause</h3>
+{% if deployment.status=="Healthy" %}
 
-            <p>{{ report.analysis.root_cause }}</p>
+🟢 Healthy
 
-            <h3>🎯 Confidence</h3>
+{% else %}
 
-            <p>{{ report.analysis.confidence }}</p>
+🔴 Unhealthy
 
-        </div>
+{% endif %}
 
-        <!-- ========================= -->
-        <!-- Recommended Actions -->
-        <!-- ========================= -->
+</td>
 
-        <div class="card">
+<td>
 
-            <h3>💡 Recommended Actions</h3>
+{% if deployment.restart_count >= 10 %}
 
-            <ul>
+⚫ Critical
 
-                {% for recommendation in report.analysis.recommendation %}
+{% elif deployment.restart_count >= 5 %}
 
-                <li>{{ recommendation }}</li>
+🔴 High
 
-                {% endfor %}
+{% elif deployment.warning_events > 0 %}
 
-            </ul>
+🟠 Medium
 
-        </div>
+{% else %}
 
-        <!-- ========================= -->
-        <!-- Prevention -->
-        <!-- ========================= -->
+🟢 Low
 
-        {% if report.analysis.prevention %}
+{% endif %}
 
-        <div class="card">
+</td>
 
-            <h3>🛡 Prevention</h3>
+<td>{{ deployment.restart_count }}</td>
+<td>{{ deployment.warning_events }}</td>
 
-            <ul>
+</tr>
 
-                {% for item in report.analysis.prevention %}
+{% endfor %}
 
-                <li>{{ item }}</li>
+</tbody>
 
-                {% endfor %}
+</table>
 
-            </ul>
+<hr>
 
-        </div>
+<h2>☸️ Kubernetes Namespaces</h2>
 
-        {% endif %}
+<table>
 
-        <!-- ========================= -->
-        <!-- Suggested Commands -->
-        <!-- ========================= -->
+<thead>
 
-        {% if report.analysis.fix_commands %}
+<tr>
 
-        <div class="card">
+<th>Name</th>
+<th>Status</th>
+<th>Age</th>
 
-            <h3>💻 Suggested Commands</h3>
+</tr>
 
-            {% for cmd in report.analysis.fix_commands %}
+</thead>
 
-            <pre>{{ cmd }}</pre>
+<tbody>
 
-            {% endfor %}
+{% for namespace in report.namespaces %}
 
-        </div>
+<tr>
 
-        {% endif %}
+<td>{{ namespace.name }}</td>
+<td>{{ namespace.status }}</td>
+<td>{{ namespace.age }}</td>
 
-        <!-- ========================= -->
-        <!-- Auto Remediation -->
-        <!-- ========================= -->
+</tr>
 
-        <div class="card">
+{% endfor %}
 
-            <h3>⚡ Auto Remediation</h3>
+</tbody>
 
-            <a href="/repair/{{ report.analysis.affected_pod or 'nginx-app' }}">
+</table>
 
-                <button>
-                    ⚡ Execute Fix
-                </button>
+<hr>
 
-            </a>
+<h2>🌐 Kubernetes Services</h2>
 
-        </div>
+<table>
 
-        {% endif %}
+<thead>
 
-        <!-- ========================= -->
-        <!-- Incident Timeline -->
-        <!-- ========================= -->
+<tr>
 
-        <hr>
+<th>Namespace</th>
+<th>Name</th>
+<th>Type</th>
+<th>Cluster IP</th>
+<th>Ports</th>
 
-        <h2>📜 Incident Timeline</h2>
+</tr>
 
-        <div class="card">
+</thead>
 
-            {% if report.timeline %}
+<tbody>
 
-            <ul>
+{% for service in report.services %}
 
-                {% for item in report.timeline %}
+<tr>
 
-                <li>
+<td>{{ service.namespace }}</td>
+<td>{{ service.name }}</td>
+<td>{{ service.type }}</td>
+<td>{{ service.cluster_ip }}</td>
+<td>{{ service.ports }}</td>
 
-                    {% if item.status == "resolved" %}
-                    🟢
-                    {% elif item.status == "open" %}
-                    🔴
-                    {% else %}
-                    🟠
-                    {% endif %}
+</tr>
 
-                    {{ item.date }} —
-                    {{ item.incident.pod if item.incident else "unknown" }}:
-                    {{ item.problem }}
-                    ({{ item.status }})
+{% endfor %}
 
-                </li>
+</tbody>
 
-                {% endfor %}
+</table>
 
-            </ul>
+<hr>
 
-            {% else %}
+<h2>🖥️ Cluster Nodes</h2>
 
-            <p>No incidents recorded yet.</p>
+<table>
 
-            {% endif %}
+<thead>
 
-        </div>
+<tr>
 
-        <!-- ========================= -->
-        <!-- Live Grafana Dashboard -->
-        <!-- ========================= -->
+<th>Name</th>
+<th>Status</th>
+<th>Role</th>
+<th>Kubernetes Version</th>
 
-        <hr>
+</tr>
 
-        <h2>📈 Live Grafana Dashboard</h2>
+</thead>
 
-        <iframe
-            src="http://localhost:3000/d/YOUR_DASHBOARD_UID?orgId=1&kiosk"
-            width="100%"
-            height="700"
-            frameborder="0">
-        </iframe>
+<tbody>
 
-        <hr>
+{% for node in report.nodes %}
 
-        <h2>⚡ Quick Actions</h2>
+<tr>
 
-        <div class="actions">
+<td>{{ node.name }}</td>
 
-            <button onclick="window.open('http://localhost:3000','_blank')">
-                📊 Open Grafana
-            </button>
+<td>
 
-            <button onclick="window.open('http://localhost:8080','_blank')">
-                🚀 Open ArgoCD
-            </button>
+{% if node.status=="Ready" %}
 
-            <button onclick="location.reload()">
-                🔄 Refresh Dashboard
-            </button>
+🟢 Ready
 
-        </div>
+{% else %}
 
-        {% endif %}
+🔴 Not Ready
 
-    </div>
+{% endif %}
 
-</body>
+</td>
 
-</html>
+<td>{{ node.roles }}</td>
+<td>{{ node.version }}</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+{% if report.pods.problems %}
+
+<hr>
+
+<h2>⚠️ Problem Pods</h2>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Namespace</th>
+<th>Pod</th>
+<th>Status</th>
+<th>Reason</th>
+<th>AI Verdict</th>
+<th>Node</th>
+<th>Host IP</th>
+<th>Pod IP</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+{% for pod in report.pods.problems %}
+
+<tr>
+
+<td>{{ pod.namespace }}</td>
+<td>{{ pod.name }}</td>
+<td>{{ pod.phase }}</td>
+<td>{{ pod.reason }}</td>
+
+<td>
+
+{% if pod.reason == "CrashLoopBackOff" %}
+
+Container repeatedly crashes after startup.
+
+{% elif pod.reason == "ImagePullBackOff" %}
+
+Container image cannot be downloaded.
+
+{% elif pod.reason == "OOMKilled" %}
+
+Container exceeded memory limit.
+
+{% elif pod.reason == "Pending" %}
+
+Pod cannot be scheduled onto a node.
+
+{% else %}
+
+Requires further investigation.
+
+{% endif %}
+
+</td>
+
+<td>{{ pod.node }}</td>
+<td>{{ pod.host_ip }}</td>
+<td>{{ pod.pod_ip }}</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+{% else %}
+
+<hr>
+
+<div class="card">
+
+<h2>✅ Cluster Status</h2>
+
+<p>No unhealthy Pods were detected.</p>
+
+</div>
+
+{% endif %}
+
+{% if report.pods.logs %}
+
+<hr>
+
+<h2>📄 Latest Pod Logs</h2>
+
+<div class="card">
+
+<pre>{{ report.pods.logs }}</pre>
+
+</div>
+
+{% endif %}
+
+<hr>
+
+<h2>📈 Prometheus Metrics</h2>
+
+<div class="card">
+<h3>🖥 CPU Usage</h3>
+<h1>{{ report.metrics.cpu }}{{ '%' if report.metrics.cpu is not none else '' }}</h1>
+</div>
+
+<div class="card">
+<h3>🧠 Memory Usage</h3>
+<h1>{{ report.metrics.memory }}{{ '%' if report.metrics.memory is not none else '' }}</h1>
+</div>
+
+<div class="card">
+<h3>💾 Disk Usage</h3>
+<h1>{{ report.metrics.disk }}{{ '%' if report.metrics.disk is not none else '' }}</h1>
+</div>
+
+{% if report.metrics.network %}
+<div class="card">
+<h3>🌐 Network</h3>
+<h1>{{ report.metrics.network }}</h1>
+</div>
+{% endif %}
+
+{% if report.metrics.items() %}
+<br>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+{% for metric,value in report.metrics.items() %}
+<tr>
+<td>{{ metric }}</td>
+<td>{{ value }}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+{% endif %}
+
+{% if report.health %}
+
+<hr>
+
+<h2>📋 AI Executive Summary</h2>
+
+<div class="card">
+
+<h3>Today's Summary</h3>
+
+<p>PlatformOps AI completed a full Kubernetes investigation.</p>
+
+<ul>
+<li>Pods Running: {{ report.health.running_pods }}</li>
+<li>Healthy Deployments: {{ report.health.healthy_deployments }}</li>
+<li>Unhealthy Deployments: {{ report.health.unhealthy_deployments }}</li>
+<li>Current Severity: {{ report.severity }}</li>
+<li>Overall Health: {{ report.health.score }}%</li>
+</ul>
+
+</div>
+
+{% elif report.investigations %}
+
+<hr>
+
+<h2>📋 PlatformOps AI Incident Summary</h2>
+
+{% for item in report.investigations %}
+
+<div class="card">
+
+<h3>{{ item.title }}</h3>
+
+<p><strong>Root Cause</strong></p>
+<p>{{ item.issue }}</p>
+
+<p><strong>Business Impact</strong></p>
+<p>{{ item.impact }}</p>
+
+<p><strong>Severity</strong></p>
+<p>{{ item.severity }}</p>
+
+{% if item.confidence %}
+
+<p><strong>AI Confidence</strong></p>
+
+<p>{{ item.confidence }}</p>
+
+{% endif %}
+
+</div>
+
+{% endfor %}
+
+{% endif %}

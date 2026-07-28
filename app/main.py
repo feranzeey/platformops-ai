@@ -13,9 +13,16 @@ from k8s_service import (
 )
 
 from events import get_events
+from timeline import (
+    build_incident_timeline,
+    summarize_timeline,
+    generate_incident_story
+)
 from prometheus import get_metrics
 from github_service import get_latest_commit
 from ai import analyze_cluster
+from ai.investigation import investigate_deployment
+from ai.report_generator import generate_incident_report
 from health import calculate_health
 from severity import calculate_severity
 from repair import restart_deployment
@@ -26,11 +33,6 @@ INCIDENTS_DIR = "incidents"
 
 
 def save_incident(pod_name, problem, root_cause, action, status="resolved"):
-    """
-    Persist a single incident to a YAML file under incidents/,
-    named by today's date. Multiple incidents on the same day are
-    appended as a list.
-    """
 
     os.makedirs(INCIDENTS_DIR, exist_ok=True)
 
@@ -38,7 +40,9 @@ def save_incident(pod_name, problem, root_cause, action, status="resolved"):
     filepath = os.path.join(INCIDENTS_DIR, f"{today}.yaml")
 
     entry = {
-        "incident": {"pod": pod_name},
+        "incident": {
+            "pod": pod_name
+        },
         "problem": problem,
         "rootcause": root_cause,
         "action": action,
@@ -49,10 +53,14 @@ def save_incident(pod_name, problem, root_cause, action, status="resolved"):
     existing = []
 
     if os.path.exists(filepath):
+
         with open(filepath, "r") as f:
+
             loaded = yaml.safe_load(f)
+
             if isinstance(loaded, list):
                 existing = loaded
+
             elif loaded:
                 existing = [loaded]
 
@@ -63,10 +71,6 @@ def save_incident(pod_name, problem, root_cause, action, status="resolved"):
 
 
 def load_incident_timeline(limit=10):
-    """
-    Read all incident YAML files and return a flat, most-recent-first
-    list of incidents for display on the dashboard.
-    """
 
     if not os.path.isdir(INCIDENTS_DIR):
         return []
@@ -90,7 +94,10 @@ def load_incident_timeline(limit=10):
             item["date"] = filename.replace(".yaml", "")
             timeline.append(item)
 
-    timeline.sort(key=lambda i: i.get("timestamp", ""), reverse=True)
+    timeline.sort(
+        key=lambda x: x.get("timestamp", ""),
+        reverse=True
+    )
 
     return timeline[:limit]
 
@@ -102,32 +109,66 @@ def home():
 
     if request.method == "POST":
 
-        # ------------------------
+        # =====================================
         # Kubernetes Resources
-        # ------------------------
+        # =====================================
 
         pods = get_pods()
         deployments = get_deployments()
         services = get_services()
         nodes = get_nodes()
         namespaces = get_namespaces()
+
         events = get_events()
 
-        # ------------------------
+        # =====================================
+        # AI Incident Timeline
+        # =====================================
+
+        incident_timeline = build_incident_timeline(events)
+
+        timeline_summary = summarize_timeline(
+            incident_timeline
+        )
+
+        incident_story = generate_incident_story(
+            incident_timeline
+        )
+
+        # =====================================
+        # AI Deployment Investigation
+        # =====================================
+
+        investigations = []
+        incident_reports = []
+
+        for deployment in deployments:
+
+            result = investigate_deployment(deployment)
+
+            if result:
+
+                investigations.append(result)
+
+                incident_reports.append(
+                    generate_incident_report(result)
+                )
+
+        # =====================================
         # Prometheus Metrics
-        # ------------------------
+        # =====================================
 
         metrics = get_metrics()
 
-        # ------------------------
+        # =====================================
         # GitHub Activity
-        # ------------------------
+        # =====================================
 
         github = get_latest_commit()
 
-        # ------------------------
+        # =====================================
         # Cluster Health
-        # ------------------------
+        # =====================================
 
         health = calculate_health(
             pods,
@@ -137,9 +178,9 @@ def home():
             metrics
         )
 
-        # ------------------------
+        # =====================================
         # Incident Severity
-        # ------------------------
+        # =====================================
 
         severity = calculate_severity(
             logs=pods["logs"],
@@ -147,9 +188,9 @@ def home():
             metrics=metrics
         )
 
-        # ------------------------
-        # AI Incident Analysis
-        # ------------------------
+        # =====================================
+        # AI Cluster Analysis
+        # =====================================
 
         analysis = analyze_cluster(
             logs=pods["logs"],
@@ -158,28 +199,37 @@ def home():
             github=github
         )
 
-        # Add calculated severity to AI response
         analysis["severity"] = severity
 
-        # ------------------------
-        # Log this analysis to the incident timeline
-        # (only when the AI actually found a problem worth recording)
-        # ------------------------
+        # =====================================
+        # Save Incident History
+        # =====================================
 
         if severity != "LOW":
+
             save_incident(
-                pod_name=analysis.get("affected_pod", "unknown"),
-                problem=analysis.get("root_cause", "Unclassified issue"),
-                root_cause=analysis.get("root_cause", "Unknown"),
+                pod_name=analysis.get(
+                    "affected_pod",
+                    "unknown"
+                ),
+                problem=analysis.get(
+                    "root_cause",
+                    "Unclassified issue"
+                ),
+                root_cause=analysis.get(
+                    "root_cause",
+                    "Unknown"
+                ),
                 action="Analyzed by PlatformOps AI",
                 status="open"
             )
 
-        # ------------------------
+        # =====================================
         # Dashboard Report
-        # ------------------------
+        # =====================================
 
         report = {
+
             "pods": pods,
             "deployments": deployments,
             "services": services,
@@ -191,7 +241,30 @@ def home():
             "health": health,
             "analysis": analysis,
             "severity": severity,
-            "timeline": load_incident_timeline()
+
+            # Historical Incident History
+
+            "history": load_incident_timeline(),
+
+            # Live Kubernetes Timeline
+
+            "timeline": incident_timeline,
+
+            # AI Timeline Summary
+
+            "timeline_summary": timeline_summary,
+
+            # AI Incident Story
+
+            "timeline_story": incident_story,
+
+            # AI Investigation
+
+            "investigations": investigations,
+
+            # Professional Incident Reports
+
+            "incident_reports": incident_reports
         }
 
     return render_template(
@@ -203,20 +276,29 @@ def home():
 @app.route("/repair/<deployment>")
 def repair(deployment):
 
-    message = restart_deployment(deployment)
+    result = restart_deployment(deployment)
+
+@app.route("/history")
+def history():
+
+    return render_template("history.html")
 
     save_incident(
         pod_name=deployment,
-        problem="Manual/AI-triggered repair",
-        root_cause="See most recent AI analysis",
-        action=message,
-        status="resolved"
+        problem="AI Auto Repair",
+        root_cause="PlatformOps AI Automatic Repair",
+        action=result["message"],
+        status="resolved" if result["success"] else "failed"
     )
 
-    return message
+    return render_template(
+        "repair.html",
+        result=result
+    )
 
 
 if __name__ == "__main__":
+
     app.run(
         host="0.0.0.0",
         port=5000,

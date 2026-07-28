@@ -1,5 +1,10 @@
+/* ==========================================================
+   PlatformOps AI Dashboard
+   Enterprise DevOps / Platform Engineering UI
+========================================================== */
+
 /* =========================
-   Global Styles
+   Global
 ========================= */
 
 * {
@@ -10,7 +15,7 @@
 
 body {
     font-family: "Segoe UI", Arial, sans-serif;
-    background: #f5f7fb;
+    background: #eef2f7;
     color: #1f2937;
     line-height: 1.6;
 }
@@ -20,29 +25,31 @@ body {
 ========================= */
 
 .container {
-    max-width: 1200px;
-    margin: 40px auto;
+    width: 95%;
+    max-width: 1500px;
+    margin: 35px auto;
     background: #ffffff;
+    border-radius: 16px;
     padding: 35px;
-    border-radius: 15px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 10px 30px rgba(0,0,0,.08);
 }
 
 /* =========================
-   Headings
+   Typography
 ========================= */
 
 h1 {
     text-align: center;
     color: #2563eb;
     margin-bottom: 10px;
+    font-size: 40px;
 }
 
 h2 {
-    margin: 30px 0 15px;
-    color: #1e40af;
+    margin: 35px 0 20px;
+    padding-left: 12px;
     border-left: 5px solid #2563eb;
-    padding-left: 10px;
+    color: #1e3a8a;
 }
 
 h3 {
@@ -50,8 +57,14 @@ h3 {
     margin-bottom: 10px;
 }
 
+h4 {
+    margin-top: 18px;
+    margin-bottom: 8px;
+    color: #1e40af;
+}
+
 p {
-    margin-bottom: 10px;
+    margin-bottom: 12px;
 }
 
 /* =========================
@@ -65,16 +78,16 @@ form {
 input {
     width: 100%;
     padding: 15px;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
     font-size: 16px;
-    transition: .3s;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    transition: .25s;
 }
 
 input:focus {
     outline: none;
     border-color: #2563eb;
-    box-shadow: 0 0 8px rgba(37, 99, 235, .2);
+    box-shadow: 0 0 10px rgba(37,99,235,.2);
 }
 
 /* =========================
@@ -85,14 +98,14 @@ button {
     width: 100%;
     margin-top: 15px;
     padding: 14px;
+    border: none;
+    border-radius: 10px;
     background: #2563eb;
     color: white;
-    border: none;
-    border-radius: 8px;
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
-    transition: .3s;
+    transition: .25s;
 }
 
 button:hover {
@@ -102,54 +115,143 @@ button:hover {
 
 .actions {
     display: flex;
-    gap: 15px;
     flex-wrap: wrap;
+    gap: 15px;
     margin-top: 20px;
 }
 
 .actions button {
     flex: 1;
-    min-width: 180px;
+    min-width: 220px;
     margin-top: 0;
 }
 
 /* =========================
-   Dashboard Cards
+   Summary Cards
 ========================= */
 
 .cards {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px,1fr));
     gap: 20px;
-    flex-wrap: wrap;
-    margin: 20px 0;
+    margin-top: 25px;
 }
 
-.card {
-    flex: 1;
-    min-width: 220px;
-    background: linear-gradient(135deg, #2563eb, #3b82f6);
+.cards .card {
+
+    background: linear-gradient(135deg,#2563eb,#3b82f6);
     color: white;
-    padding: 25px;
-    border-radius: 12px;
     text-align: center;
-    box-shadow: 0 6px 15px rgba(37, 99, 235, .25);
-    transition: .3s;
+
+}
+
+.cards .card h3 {
+
+    color: white;
+
+}
+
+.cards .card p {
+
+    font-size: 36px;
+    font-weight: bold;
+
+}
+
+/* =========================
+   General Card
+========================= */
+
+.card {
+
+    background: white;
+    border-radius: 14px;
+    padding: 25px;
+    margin-bottom: 25px;
+    border-left: 6px solid #2563eb;
+    box-shadow: 0 8px 20px rgba(0,0,0,.08);
+
 }
 
 .card:hover {
-    transform: translateY(-5px);
+
+    transform: translateY(-3px);
+    transition: .25s;
+
 }
 
-.card h3 {
+/* =========================
+   Tables
+========================= */
+
+table {
+
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: white;
+    box-shadow: 0 5px 12px rgba(0,0,0,.05);
+
+}
+
+table thead {
+
+    background: #2563eb;
     color: white;
-    font-size: 18px;
-    margin-bottom: 12px;
+
 }
 
-.card p {
-    font-size: 32px;
-    font-weight: bold;
-    margin: 0;
+table th {
+
+    padding: 14px;
+    text-align: left;
+    font-weight: 600;
+
+}
+
+table td {
+
+    padding: 12px;
+    border-bottom: 1px solid #e5e7eb;
+
+}
+
+table tbody tr:nth-child(even) {
+
+    background: #f9fafb;
+
+}
+
+table tbody tr:hover {
+
+    background: #e0f2fe;
+
+}
+
+/* =========================
+   Progress Bar
+========================= */
+
+progress {
+
+    width: 100%;
+    height: 25px;
+    margin-top: 10px;
+
+}
+
+progress::-webkit-progress-bar {
+
+    background: #e5e7eb;
+    border-radius: 10px;
+
+}
+
+progress::-webkit-progress-value {
+
+    background: #2563eb;
+    border-radius: 10px;
+
 }
 
 /* =========================
@@ -157,11 +259,15 @@ button:hover {
 ========================= */
 
 ul {
+
     padding-left: 20px;
+
 }
 
 li {
+
     margin-bottom: 8px;
+
 }
 
 /* =========================
@@ -169,15 +275,83 @@ li {
 ========================= */
 
 pre {
+
     background: #111827;
-    color: #10b981;
+    color: #22c55e;
     padding: 18px;
-    border-radius: 10px;
+    border-radius: 12px;
     overflow-x: auto;
-    margin-top: 10px;
-    margin-bottom: 20px;
-    font-size: 14px;
     white-space: pre-wrap;
+    font-size: 14px;
+    margin-top: 10px;
+
+}
+
+/* =========================
+   Status Badges
+========================= */
+
+.status {
+
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 25px;
+    color: white;
+    font-weight: bold;
+    font-size: 13px;
+
+}
+
+.status-high {
+
+    background: #dc2626;
+
+}
+
+.status-medium {
+
+    background: #ea580c;
+
+}
+
+.status-low {
+
+    background: #16a34a;
+
+}
+
+.status-healthy {
+
+    background: #16a34a;
+
+}
+
+.status-unhealthy {
+
+    background: #dc2626;
+
+}
+
+/* =========================
+   Severity Cards
+========================= */
+
+.severity-high {
+
+    border-left: 6px solid #dc2626;
+
+}
+
+.severity-medium {
+
+    border-left: 6px solid #ea580c;
+
+}
+
+.severity-low {
+
+    border-left: 6px solid #16a34a;
+
 }
 
 /* =========================
@@ -185,80 +359,96 @@ pre {
 ========================= */
 
 hr {
-    margin: 35px 0;
+
     border: none;
-    border-top: 1px solid #e5e7eb;
+    border-top: 1px solid #dbe3ee;
+    margin: 35px 0;
+
 }
 
 /* =========================
-   Tables (Future Use)
+   Scrollbars
 ========================= */
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 15px;
+::-webkit-scrollbar {
+
+    width: 10px;
+    height: 10px;
+
 }
 
-table th {
+::-webkit-scrollbar-thumb {
+
     background: #2563eb;
-    color: white;
-    padding: 12px;
+    border-radius: 10px;
+
 }
 
-table td {
-    padding: 12px;
-    border: 1px solid #e5e7eb;
-}
+::-webkit-scrollbar-track {
 
-table tr:nth-child(even) {
-    background: #f8fafc;
+    background: #f1f5f9;
+
 }
 
 /* =========================
-   Status Colors
+   Responsive
 ========================= */
 
-.success {
-    color: #16a34a;
-    font-weight: bold;
+@media (max-width:900px){
+
+    .container{
+
+        width:96%;
+        padding:20px;
+
+    }
+
+    h1{
+
+        font-size:30px;
+
+    }
+
+    table{
+
+        display:block;
+        overflow-x:auto;
+
+    }
+
+    .cards{
+
+        grid-template-columns:1fr;
+
+    }
+
+    .actions{
+
+        flex-direction:column;
+
+    }
+
+    .actions button{
+
+        width:100%;
+
+    }
+
 }
 
-.warning {
-    color: #ca8a04;
-    font-weight: bold;
-}
-
-.error {
-    color: #dc2626;
-    font-weight: bold;
-}
-
-/* =========================
-   Responsive Design
-========================= */
-
-@media (max-width: 768px) {
-
-    .container {
-        margin: 20px;
-        padding: 20px;
-    }
-
-    .cards {
-        flex-direction: column;
-    }
-
-    .actions {
-        flex-direction: column;
-    }
-
-    .actions button {
-        width: 100%;
-    }
+@media (max-width:600px){
 
     input,
-    button {
-        font-size: 15px;
+    button{
+
+        font-size:15px;
+
     }
+
+    h2{
+
+        font-size:22px;
+
+    }
+
 }

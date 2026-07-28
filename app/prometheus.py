@@ -29,6 +29,8 @@ def get_metrics():
 
     cpu = query("up")
 
-    return {
-        "cpu": cpu
-    }
+return {
+    "cpu": cpu_value,
+    "memory": memory_value,
+    "disk": disk_value,
+}

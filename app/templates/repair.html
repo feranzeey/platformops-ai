@@ -1,0 +1,65 @@
+<!-- ====================================================== -->
+<!-- 🔧 PlatformOps AI Repair Result -->
+<!-- ====================================================== -->
+
+<hr>
+
+<h2>🔧 PlatformOps AI Auto Repair</h2>
+
+<div class="card">
+
+    {% if result.success %}
+
+        <h3>✅ Repair Successful</h3>
+
+        <p class="success">{{ result.message }}</p>
+
+    {% else %}
+
+        <h3>❌ Repair Failed</h3>
+
+        <p class="error">{{ result.message }}</p>
+
+    {% endif %}
+
+    <table>
+
+        <tr>
+            <th width="220">Action</th>
+            <td>{{ result.action }}</td>
+        </tr>
+
+        <tr>
+            <th>Deployment</th>
+            <td>{{ result.deployment }}</td>
+        </tr>
+
+        <tr>
+            <th>Namespace</th>
+            <td>{{ result.namespace }}</td>
+        </tr>
+
+        <tr>
+            <th>Status</th>
+
+            <td>
+
+                {% if result.success %}
+                    <span class="success">🟢 Resolved</span>
+                {% else %}
+                    <span class="error">🔴 Failed</span>
+                {% endif %}
+
+            </td>
+
+        </tr>
+
+    </table>
+
+</div>
+
+<br>
+
+<a href="/">
+    <button>⬅ Back to Dashboard</button>
+</a>
