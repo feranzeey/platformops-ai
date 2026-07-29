@@ -1,8 +1,10 @@
 # PlatformOps AI
 
+> **An AI-powered Kubernetes Operations Dashboard that monitors cluster health, investigates infrastructure issues, performs root cause analysis, generates incident reports, and assists with Kubernetes remediation.**
+
+
 ![PlatformOps AI Architecture](screenshots/platformops-ai-architecture.png)
 
-> **An AI-powered Kubernetes Operations Dashboard that monitors cluster health, investigates infrastructure issues, performs root cause analysis, generates incident reports, and assists with Kubernetes remediation.**
 
 ---
 
