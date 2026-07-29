@@ -272,16 +272,13 @@ def home():
         report=report
     )
 
+   # =====================================
+# Repair Deployment
+# =====================================
 
 @app.route("/repair/<deployment>")
 def repair(deployment):
-
     result = restart_deployment(deployment)
-
-@app.route("/history")
-def history():
-
-    return render_template("history.html")
 
     save_incident(
         pod_name=deployment,
@@ -296,6 +293,24 @@ def history():
         result=result
     )
 
+# =====================================
+# Incident History
+# =====================================
+
+@app.route("/history")
+def history():
+
+    history = load_incident_timeline()
+
+    return render_template(
+        "history.html",
+        history=history
+    )
+
+
+# =====================================
+# Run Application
+# =====================================
 
 if __name__ == "__main__":
 

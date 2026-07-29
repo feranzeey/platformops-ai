@@ -1,85 +1,141 @@
-#  PlatformOps AI
+# PlatformOps AI
 
-> An AI-powered Kubernetes Operations Dashboard that monitors cluster health, detects infrastructure issues, performs root cause analysis, visualizes incidents, generates reports, and automates recovery actions.
+> **An AI-powered Kubernetes Operations Dashboard that monitors cluster health, investigates infrastructure issues, performs root cause analysis, generates incident reports, and assists with Kubernetes remediation.**
 
 ---
 
-##  Overview
+# 🏗️ PlatformOps AI Architecture
 
-PlatformOps AI is a DevOps observability and incident management platform built to simplify Kubernetes cluster monitoring and troubleshooting.
+PlatformOps AI provides an end-to-end AI-powered Kubernetes incident response workflow. It collects data from Kubernetes, Prometheus, GitHub, and cluster events, performs intelligent incident analysis, recommends remediation actions, stores incident history, and presents everything through a unified web dashboard.
 
-Instead of manually checking Kubernetes resources, logs, metrics, and events, PlatformOps AI collects infrastructure data, analyzes it using AI, identifies potential problems, suggests root causes, and provides actionable recommendations from a single dashboard.
+<p align="center">
+  <img src="screenshots/platformops-ai-architecture.png"
+       alt="PlatformOps AI Architecture"
+       width="1000">
+</p>
 
-The project demonstrates modern DevOps practices including:
+<p align="center">
+<strong>Figure 1.</strong> End-to-end PlatformOps AI architecture illustrating the complete workflow from data collection and AI-powered incident analysis to automated remediation, reporting, historical storage, and continuous monitoring.
+</p>
 
-- Kubernetes Monitoring
-- AI-Assisted Incident Analysis
-- Infrastructure Health Checks
-- Root Cause Analysis
-- Automated Repair Actions
-- GitHub Integration
-- Prometheus Metrics
-- Incident Timeline Visualization
-- PDF Report Generation
+---
+
+![Python](https://img.shields.io/badge/Python-3.12-blue)
+![Flask](https://img.shields.io/badge/Flask-Web_App-black)
+![Docker](https://img.shields.io/badge/Docker-Containerized-blue)
+![Kubernetes](https://img.shields.io/badge/Kubernetes-Minikube-326CE5)
+![Prometheus](https://img.shields.io/badge/Prometheus-Monitoring-orange)
+![GitHub](https://img.shields.io/badge/GitHub-Actions-black)
+---
+
+#  Overview
+
+PlatformOps AI is an AI-powered DevOps platform built to simplify Kubernetes operations.
+
+Instead of manually switching between **kubectl**, **Prometheus**, **GitHub**, and Kubernetes Events, PlatformOps AI collects cluster information, performs AI-powered investigations, identifies infrastructure problems, evaluates severity, recommends remediation commands, and presents everything through a single dashboard.
+
+The project demonstrates practical Platform Engineering, Site Reliability Engineering (SRE), Kubernetes Operations, Infrastructure Monitoring, and AI-assisted Incident Response.
 
 ---
 
 #  Features
 
-###  Kubernetes Cluster Monitoring
+##  Kubernetes Monitoring
 
-- Monitor Pods
-- Monitor Deployments
-- Monitor Services
-- Monitor Nodes
-- Monitor Namespaces
-- Display Cluster Status
+Monitor:
 
----
-
-###  Infrastructure Health Dashboard
-
-View:
-
-- CPU Usage
-- Memory Usage
-- Network Usage
-- Pod Status
-- Restart Counts
-- Cluster Health Score
+- Pods
+- Deployments
+- Services
+- Nodes
+- Namespaces
+- Kubernetes Events
 
 ---
 
-###  AI Incident Investigation
+##  Cluster Health Dashboard
 
-Automatically analyzes cluster information to identify:
+Displays:
 
+- Overall Health Score
+- Healthy Pods
 - Failed Pods
+- Deployment Status
+- Infrastructure Health
+
+---
+
+##  AI Deployment Investigation
+
+Automatically detects unhealthy deployments and generates:
+
+- Issue Summary
+- Evidence
+- Business Impact
+- Severity
+- Recommended kubectl Commands
+
+Example:
+
+```
+Issue
+
+Grafana deployment unavailable
+
+Evidence
+
+Ready Replicas: 0/1
+
+Deployment unavailable
+
+Impact
+
+Monitoring is unavailable.
+
+Severity
+
+HIGH
+
+Recommendation
+
+kubectl rollout restart deployment monitoring-grafana -n monitoring
+```
+
+---
+
+##  AI Root Cause Analysis
+
+PlatformOps AI analyzes Kubernetes resources and explains why workloads are unhealthy.
+
+Detects issues such as:
+
 - CrashLoopBackOff
-- Image Pull Errors
-- High Resource Usage
-- Deployment Problems
-- Service Availability Issues
-
-Generates human-readable explanations of infrastructure problems.
+- ImagePullBackOff
+- Failed Deployments
+- Unhealthy Pods
+- Readiness Probe Failures
+- Resource Exhaustion
 
 ---
 
-###  Root Cause Analysis
+##  Incident Investigation
 
-Each investigation includes:
+Each incident includes:
 
-- Problem Summary
 - Root Cause
-- Severity Level
-- Impact Assessment
-- Recommended Resolution
+- Severity
+- Business Impact
+- AI Confidence
+- Evidence
+- Recommended Commands
 
 ---
 
-###  Incident Timeline
+##  Incident Timeline
 
-Visual timeline of Kubernetes events:
+Historical timeline of Kubernetes incidents.
+
+Example:
 
 ```
 Pod Scheduled
@@ -98,7 +154,7 @@ CrashLoopBackOff
 
 ↓
 
-Auto Investigation
+AI Investigation
 
 ↓
 
@@ -107,152 +163,342 @@ Deployment Restarted
 
 ---
 
-###  Historical Incident Tracking
+## 📄 Incident Report Generation
 
-View previous incidents grouped by:
+Generate professional incident summaries containing:
 
-- Today
-- Yesterday
-- Last Week
-
-Each incident contains:
-
+- Deployment
 - Root Cause
-- Timeline
-- Resolution
-- Commands Used
-- Duration
-- Lessons Learned
+- Severity
+- Impact
+- Investigation Details
+- Recommended Resolution
 
 ---
 
-###  Automated Repair
+##  Auto Remediation
 
-Supports automated remediation such as:
+Supports automated recovery actions including:
 
 - Restart Deployment
-- Restart Pods
+- Suggested kubectl Commands
 - Recovery Recommendations
-- Kubernetes Repair Commands
 
 ---
 
-###  PDF Report Generation
+## 📈 Prometheus Monitoring
 
-Generate downloadable reports including:
-
-- Cluster Summary
-- AI Investigation
-- Root Cause Analysis
-- Health Metrics
-- Incident Timeline
-- Recommendations
-
----
-
-###  Resource Charts
-
-Visual charts for:
+Collects live metrics including:
 
 - CPU Usage
 - Memory Usage
 - Network Usage
-- Restart Trends
+- Cluster Utilization
 
 ---
 
-###  GitHub Integration
+##  GitHub Integration
 
-Retrieve repository information including:
+Displays:
 
 - Latest Commit
 - Commit Author
 - Commit Date
+- Commit Message
 
 Useful for correlating deployments with infrastructure incidents.
 
 ---
 
-###  Prometheus Integration
+# 🏗️ Architecture
 
-Collects live infrastructure metrics from Prometheus including:
+PlatformOps AI follows an end-to-end AI-driven incident response workflow. It continuously collects Kubernetes cluster data, correlates infrastructure metrics and events, performs AI-powered root cause analysis, generates incident reports, stores historical incidents, and provides automated remediation through a unified web dashboard.
+
+<p align="center">
+    <img src="screenshots/architecture-diagram.png"
+         alt="PlatformOps AI Architecture"
+         width="900">
+</p>
+
+## Architecture Flow
+
+```text
+                👨‍💻 Platform Engineer
+                        │
+                        │ 1. Analyze Cluster
+                        ▼
+                 🌐 Flask Web Dashboard
+                        │
+                        ▼
+          ☸️ Kubernetes Python Client
+                        │
+        ┌───────────────┼────────────────┐
+        │               │                │
+        ▼               ▼                ▼
+     Kubernetes     Prometheus      GitHub API
+      Resources        Metrics       Deployment Info
+        │               │                │
+        └───────────────┼────────────────┘
+                        ▼
+               🤖 PlatformOps AI Engine
+                        │
+      ┌─────────────────┼──────────────────┐
+      │                 │                  │
+      ▼                 ▼                  ▼
+ Deployment      Root Cause Analysis   Health Engine
+Investigation         & Severity
+      │                 │                  │
+      └─────────────────┼──────────────────┘
+                        ▼
+          📋 Incident Report Generator
+                        │
+                        ▼
+            📁 Incident Timeline (YAML)
+                        │
+                        ▼
+             ⚡ Auto Repair Engine
+                        │
+                        ▼
+             📊 PlatformOps AI Dashboard
+```
+
+## Architecture Components
+
+### 👨‍💻 Platform Engineer
+
+Starts an investigation from the web dashboard by asking questions such as:
+
+- Why is my application down?
+- Why are Pods restarting?
+- Which deployment failed?
+
+### 🌐 Flask Dashboard
+
+Provides a single interface for:
+
+- Cluster Health
+- AI Investigation
+- Incident Timeline
+- Kubernetes Resources
+- Prometheus Metrics
+- GitHub Activity
+- Auto Remediation
+
+### ☸️ Kubernetes Collector
+
+Collects live information from the cluster including:
+
+- Pods
+- Deployments
+- Services
+- Nodes
+- Namespaces
+- Events
+
+### 📈 Prometheus Integration
+
+Retrieves infrastructure metrics such as:
 
 - CPU Usage
 - Memory Usage
-- Network Metrics
+- Network Usage
 - Cluster Utilization
+
+### 🔄 GitHub Integration
+
+Correlates deployments with code changes by retrieving:
+
+- Latest Commit
+- Commit Author
+- Commit Date
+- Commit Message
+
+### 🤖 AI Investigation Engine
+
+Automatically detects infrastructure problems including:
+
+- CrashLoopBackOff
+- Failed Deployments
+- ImagePullBackOff
+- High Restart Counts
+- Service Failures
+- Resource Exhaustion
+
+The AI determines:
+
+- Root Cause
+- Severity
+- Business Impact
+- Recommended kubectl Commands
+
+### 📋 Incident Report Generator
+
+Creates structured AI-generated reports containing:
+
+- Executive Summary
+- Root Cause
+- Supporting Evidence
+- Severity
+- Business Impact
+- Recommended Actions
+
+### 📁 Incident Timeline
+
+Stores investigations as YAML files for historical tracking.
+
+Each incident includes:
+
+- Timestamp
+- Root Cause
+- Status
+- Repair Action
+- Resolution History
+
+### ⚡ Automated Repair
+
+Supports automated Kubernetes recovery actions including:
+
+- Restart Deployment
+- Restart Pods
+- Rollout Restart
+- Suggested kubectl Commands
+
+### 📊 Unified Dashboard
+
+Displays everything in one place:
+
+- Cluster Health Score
+- AI Investigations
+- Deployment Status
+- Kubernetes Events
+- Prometheus Metrics
+- GitHub Activity
+- Incident Timeline
+- Auto Repair
+
+## End-to-End Workflow
+
+1. User starts an analysis from the dashboard.
+2. PlatformOps AI collects Kubernetes resources.
+3. Prometheus metrics are retrieved.
+4. GitHub deployment information is collected.
+5. AI investigates unhealthy deployments.
+6. Root cause analysis is generated.
+7. Severity is calculated.
+8. Incident reports are generated.
+9. Incidents are stored for historical tracking.
+10. Auto-remediation commands are suggested or executed.
+11. Results are displayed in the dashboard.
 
 ---
 
-#  Architecture
+#  Dashboard Workflow
 
 ```
-                     Kubernetes Cluster
-                             │
-                             ▼
-                  Kubernetes Python Client
-                             │
-      ┌──────────────────────┼──────────────────────┐
-      │                      │                      │
-      ▼                      ▼                      ▼
- Prometheus API        GitHub API          Kubernetes Events
-      │                      │                      │
-      └──────────────┬───────┴──────────────┬───────┘
-                     ▼
-              PlatformOps AI Engine
-                     │
-      ┌──────────────┼──────────────┐
-      │              │              │
-      ▼              ▼              ▼
- AI Analysis   Incident Timeline  Health Engine
-      │              │              │
-      └──────────────┼──────────────┘
-                     ▼
-              Flask Web Dashboard
-                     │
-      ┌──────────────┼──────────────┐
-      ▼              ▼              ▼
- Dashboard      PDF Reports     Auto Repair
+User
+
+   │
+
+   ▼
+
+PlatformOps AI Dashboard
+
+   │
+
+   ▼
+
+Collect Kubernetes Resources
+
+   │
+
+   ├── Pods
+
+   ├── Deployments
+
+   ├── Services
+
+   ├── Nodes
+
+   ├── Namespaces
+
+   └── Events
+
+   │
+
+   ▼
+
+Prometheus Metrics
+
+   │
+
+   ▼
+
+AI Investigation Engine
+
+   │
+
+   ├── Incident Detection
+
+   ├── Root Cause Analysis
+
+   ├── Severity Assessment
+
+   ├── Business Impact
+
+   ├── Recommended kubectl Commands
+
+   └── Incident Report Generation
+
+   │
+
+   ▼
+
+Incident Timeline
+
+   │
+
+   ▼
+
+Auto Remediation
 ```
 
 ---
 
 # 🛠 Tech Stack
 
-## Backend
+### Backend
 
-- Python 3.12
+- Python
 - Flask
 
-## Kubernetes
+### Kubernetes
 
 - Kubernetes Python Client
 - kubectl
 - Minikube
 
-## Monitoring
+### Monitoring
 
 - Prometheus
 
-## AI
+### AI
 
-- OpenAI API (optional)
-- Custom AI Analysis Engine
+- Custom AI Investigation Engine
 
-## Frontend
+### Frontend
 
 - HTML
 - CSS
-- JavaScript
-- Jinja2 Templates
+- Jinja2
 
-## Reports
+### Reports
 
-- ReportLab
 - YAML
+- Report Generator
 
-## Version Control
+### DevOps
 
+- Docker
 - Git
 - GitHub
 
@@ -263,38 +509,38 @@ Collects live infrastructure metrics from Prometheus including:
 ```
 platformops-ai/
 
-│
 ├── app/
+│   ├── ai/
+│   │   ├── investigation.py
+│   │   ├── report_generator.py
+│   │   ├── root_cause.py
+│   │   ├── recommendation.py
+│   │   ├── severity.py
+│   │   └── timeline.py
+│   │
+│   ├── templates/
+│   ├── static/
 │   ├── main.py
-│   ├── ai.py
 │   ├── events.py
 │   ├── github_service.py
 │   ├── health.py
 │   ├── k8s_service.py
 │   ├── prometheus.py
 │   ├── repair.py
-│   ├── severity.py
-│   ├── timeline.py
-│   ├── templates/
-│   └── static/
+│   └── severity.py
 │
 ├── incidents/
-│
-├── reports/
-│
+├── k8s/
 ├── screenshots/
-│
 ├── Dockerfile
+├── docker-compose.yml
 ├── requirements.txt
-├── README.md
-└── docker-compose.yml
+└── README.md
 ```
 
 ---
 
 #  Installation
-
-## Clone Repository
 
 ```bash
 git clone https://github.com/feranzeey/platformops-ai.git
@@ -302,15 +548,11 @@ git clone https://github.com/feranzeey/platformops-ai.git
 cd platformops-ai
 ```
 
----
-
-## Create Virtual Environment
+Create a virtual environment.
 
 ```bash
 python -m venv venv
 ```
-
-Activate
 
 Windows
 
@@ -324,17 +566,13 @@ Linux
 source venv/bin/activate
 ```
 
----
-
-## Install Dependencies
+Install dependencies.
 
 ```bash
 pip install -r requirements.txt
 ```
 
----
-
-## Run Application
+Run the application.
 
 ```bash
 cd app
@@ -342,7 +580,7 @@ cd app
 python main.py
 ```
 
-Application runs on:
+Open:
 
 ```
 http://localhost:5000
@@ -350,7 +588,7 @@ http://localhost:5000
 
 ---
 
-#  Docker
+# 🐳 Docker
 
 Build
 
@@ -368,8 +606,6 @@ docker run -p 5000:5000 platformops-ai
 
 #  Kubernetes Deployment
 
-Apply Kubernetes manifests
-
 ```bash
 kubectl apply -f k8s/
 ```
@@ -386,98 +622,128 @@ kubectl get svc
 
 #  Screenshots
 
-Include screenshots of:
+## PlatformOps AI Dashboard
 
-```
-Dashboard
+![Dashboard](screenshots/01-platformops-dashboard.png)
 
-Cluster Analysis
+---
 
-Incident Timeline
+## Cluster Health Dashboard
 
-Root Cause Analysis
+![Health](screenshots/02-cluster-health-dashboard.png)
 
-Historical Incidents
+---
 
-PDF Report
+## AI Deployment Investigation
 
-Auto Repair
+![Investigation](screenshots/03-ai-deployment-investigation.png)
 
-Resource Charts
-```
+---
 
-Example folder
+## Cluster Summary
 
-```
-screenshots/
+![Summary](screenshots/04-cluster-summary.png)
 
-dashboard.png
+---
 
-timeline.png
+## Kubernetes Deployments
 
-analysis.png
+![Deployments](screenshots/05-kubernetes-deployments.png)
 
-report.png
+---
 
-history.png
+## Kubernetes Events
 
-repair.png
-```
+![Events](screenshots/06-kubernetes-events.png)
+
+---
+
+## Prometheus Metrics
+
+![Prometheus](screenshots/07-prometheus-metrics.png)
+
+---
+
+## Active Incident Analysis
+
+![Incident](screenshots/08-active-incident-analysis.png)
+
+---
+
+## Incident Timeline
+
+![Timeline](screenshots/09-incident-timeline.png)
+
+---
+
+## Auto Remediation
+
+![Repair](screenshots/10-auto-remediation.png)
+
+---
+
+## GitHub Integration
+
+![GitHub](screenshots/11-github-integration.png)
+
+---
+
+## Platform Architecture
+
+![Architecture](screenshots/12-project-architecture.png)
 
 ---
 
 #  Demo
 
-Recommended demonstration:
+Suggested walkthrough:
 
-- Open Dashboard
-- Analyze Cluster
+- Cluster Health
 - AI Investigation
-- Incident Timeline
 - Root Cause Analysis
-- Auto Repair
-- Generate PDF Report
+- Incident Timeline
+- Auto Remediation
+- Prometheus Metrics
+- GitHub Integration
 
-Duration:
-
-2–3 minutes
+Estimated duration: **2–3 minutes**
 
 ---
 
 #  Future Improvements
 
-- User Authentication
 - Multi-Cluster Support
-- Grafana Integration
+- AI Chat Assistant
+- Helm Chart
+- GitHub Actions CI/CD
 - Slack Notifications
 - Microsoft Teams Alerts
 - Email Notifications
 - Predictive Failure Detection
-- AI Chat Assistant
-- Real-Time WebSockets
-- Helm Deployment
-- GitHub Actions CI/CD
 - Role-Based Access Control (RBAC)
+- Grafana Integration
+- One-Click Safe Auto Repair
 
 ---
 
 #  Learning Outcomes
 
-This project demonstrates knowledge of:
+This project demonstrates experience with:
 
 - Kubernetes
 - Docker
 - Flask
 - Python
-- DevOps Automation
+- DevOps
+- Platform Engineering
 - Infrastructure Monitoring
 - Observability
-- Incident Management
+- Incident Response
+- AI-assisted Operations
 - Prometheus
 - GitHub API
 - YAML
 - REST APIs
-- AI-assisted Operations
 
 ---
 
@@ -488,7 +754,7 @@ Contributions are welcome.
 1. Fork the repository.
 2. Create a feature branch.
 3. Commit your changes.
-4. Push the branch.
+4. Push your branch.
 5. Open a Pull Request.
 
 ---
@@ -501,9 +767,9 @@ This project is licensed under the MIT License.
 
 #  Author
 
-**Feranmi**
+**Oluwaferanmi Dada**
 
-DevOps Engineer | Cloud Enthusiast | Kubernetes | Docker | Python | CI/CD | Infrastructure Automation
+DevOps Engineer | Platform Engineering | Kubernetes | Docker | Python | CI/CD | Cloud Infrastructure
 
 GitHub: https://github.com/feranzeey
 
@@ -513,4 +779,4 @@ LinkedIn: https://www.linkedin.com/in/your-linkedin-profile
 
 ##  Support
 
-If you found this project helpful, consider giving it a **Star** on GitHub. It helps others discover the project and supports continued development.
+If you found this project helpful, consider giving it a **Star** on GitHub.

@@ -1,12 +1,12 @@
 <!-- ====================================================== -->
-<!-- 🤖 PlatformOps AI Deployment Investigation -->
+<!--  PlatformOps AI Deployment Investigation -->
 <!-- ====================================================== -->
 
 {% if report.investigations %}
 
 <hr>
 
-<h2>🤖 PlatformOps AI Deployment Investigation</h2>
+<h2> PlatformOps AI Deployment Investigation</h2>
 
 <p>PlatformOps AI automatically investigated unhealthy Kubernetes deployments and generated the following incident reports.</p>
 
@@ -14,11 +14,11 @@
 
 <div class="card">
 
-    <h3>🚀 {{ item.title }}</h3>
+    <h3> {{ item.title }}</h3>
 
     <hr>
 
-    <h4>🧠 Root Cause Analysis</h4>
+    <h4> Root Cause Analysis</h4>
 
     <table>
 
@@ -78,7 +78,7 @@
 
     <hr>
 
-    <h4>🔎 Evidence</h4>
+    <h4> Evidence</h4>
 
     <ul>
 
@@ -92,7 +92,7 @@
 
     <hr>
 
-    <h4>💡 AI Recommendation</h4>
+    <h4> AI Recommendation</h4>
 
     {% if item.recommended_action %}
     <p>{{ item.recommended_action }}</p>
@@ -108,7 +108,7 @@
 
     <hr>
 
-    <h4>💻 Recommended Commands</h4>
+    <h4> Recommended Commands</h4>
 
     <pre>{{ item.command }}</pre>
 
@@ -468,7 +468,7 @@ to the current cluster state.
 
 </table>
 
-{% if report.pods.problems %}
+{% if report and report.pods.problems %}
 
 <hr>
 
