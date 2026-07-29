@@ -1,22 +1,8 @@
 # PlatformOps AI
 
+![PlatformOps AI Architecture](screenshots/platformops-ai-architecture.png)
+
 > **An AI-powered Kubernetes Operations Dashboard that monitors cluster health, investigates infrastructure issues, performs root cause analysis, generates incident reports, and assists with Kubernetes remediation.**
-
----
-
-# 🏗️ PlatformOps AI Architecture
-
-PlatformOps AI provides an end-to-end AI-powered Kubernetes incident response workflow. It collects data from Kubernetes, Prometheus, GitHub, and cluster events, performs intelligent incident analysis, recommends remediation actions, stores incident history, and presents everything through a unified web dashboard.
-
-<p align="center">
-  <img src="screenshots/platformops-ai-architecture.png"
-       alt="PlatformOps AI Architecture"
-       width="1000">
-</p>
-
-<p align="center">
-<strong>Figure 1.</strong> End-to-end PlatformOps AI architecture illustrating the complete workflow from data collection and AI-powered incident analysis to automated remediation, reporting, historical storage, and continuous monitoring.
-</p>
 
 ---
 
@@ -26,9 +12,10 @@ PlatformOps AI provides an end-to-end AI-powered Kubernetes incident response wo
 ![Kubernetes](https://img.shields.io/badge/Kubernetes-Minikube-326CE5)
 ![Prometheus](https://img.shields.io/badge/Prometheus-Monitoring-orange)
 ![GitHub](https://img.shields.io/badge/GitHub-Actions-black)
+
 ---
 
-#  Overview
+# Overview
 
 PlatformOps AI is an AI-powered DevOps platform built to simplify Kubernetes operations.
 
