@@ -202,12 +202,7 @@ Useful for correlating deployments with infrastructure incidents.
 # 🏗️ Architecture
 
 PlatformOps AI follows an end-to-end AI-driven incident response workflow. It continuously collects Kubernetes cluster data, correlates infrastructure metrics and events, performs AI-powered root cause analysis, generates incident reports, stores historical incidents, and provides automated remediation through a unified web dashboard.
-
-<p align="center">
-    <img src="screenshots/architecture-diagram.png"
-         alt="PlatformOps AI Architecture"
-         width="900">
-</p>
+>
 
 ## Architecture Flow
 
