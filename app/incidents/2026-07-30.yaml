@@ -1,0 +1,112 @@
+- incident:
+    pod: unknown
+  problem: Deployment failed to reach a healthy state.
+  rootcause: Deployment failed to reach a healthy state.
+  action: Analyzed by PlatformOps AI
+  status: open
+  timestamp: '2026-07-30T09:03:26.501936+00:00'
+- incident:
+    pod: unknown
+  problem: Deployment failed to reach a healthy state.
+  rootcause: Deployment failed to reach a healthy state.
+  action: Analyzed by PlatformOps AI
+  status: open
+  timestamp: '2026-07-30T09:03:43.173485+00:00'
+- incident:
+    pod: unknown
+  problem: Deployment failed to reach a healthy state.
+  rootcause: Deployment failed to reach a healthy state.
+  action: Analyzed by PlatformOps AI
+  status: open
+  timestamp: '2026-07-30T09:04:10.121453+00:00'
+- incident:
+    pod: unknown
+  problem: Deployment failed to reach a healthy state.
+  rootcause: Deployment failed to reach a healthy state.
+  action: Analyzed by PlatformOps AI
+  status: open
+  timestamp: '2026-07-30T09:04:12.381374+00:00'
+- incident:
+    pod: unknown
+  problem: Deployment failed to reach a healthy state.
+  rootcause: Deployment failed to reach a healthy state.
+  action: Analyzed by PlatformOps AI
+  status: open
+  timestamp: '2026-07-30T09:09:24.151400+00:00'
+- incident:
+    pod: unknown
+  problem: Deployment failed to reach a healthy state.
+  rootcause: Deployment failed to reach a healthy state.
+  action: Analyzed by PlatformOps AI
+  status: open
+  timestamp: '2026-07-30T09:09:50.527147+00:00'
+- incident:
+    pod: unknown
+  problem: Deployment failed to reach a healthy state.
+  rootcause: Deployment failed to reach a healthy state.
+  action: Analyzed by PlatformOps AI
+  status: open
+  timestamp: '2026-07-30T09:10:07.772301+00:00'
+- incident:
+    pod: unknown
+  problem: Deployment failed to reach a healthy state.
+  rootcause: Deployment failed to reach a healthy state.
+  action: Analyzed by PlatformOps AI
+  status: open
+  timestamp: '2026-07-30T09:28:43.888163+00:00'
+- incident:
+    pod: unknown
+  problem: Readiness or liveness probe is failing.
+  rootcause: Readiness or liveness probe is failing.
+  action: Analyzed by PlatformOps AI
+  status: open
+  timestamp: '2026-07-30T09:36:27.672770+00:00'
+- incident:
+    pod: unknown
+  problem: Readiness or liveness probe is failing.
+  rootcause: Readiness or liveness probe is failing.
+  action: Analyzed by PlatformOps AI
+  status: open
+  timestamp: '2026-07-30T09:47:30.713140+00:00'
+- incident:
+    pod: unknown
+  problem: Readiness or liveness probe is failing.
+  rootcause: Readiness or liveness probe is failing.
+  action: Analyzed by PlatformOps AI
+  status: open
+  timestamp: '2026-07-30T09:49:36.568857+00:00'
+- incident:
+    pod: unknown
+  problem: Readiness or liveness probe is failing.
+  rootcause: Readiness or liveness probe is failing.
+  action: Analyzed by PlatformOps AI
+  status: open
+  timestamp: '2026-07-30T09:56:19.607844+00:00'
+- incident:
+    pod: unknown
+  problem: Deployment failed to reach a healthy state.
+  rootcause: Deployment failed to reach a healthy state.
+  action: Analyzed by PlatformOps AI
+  status: open
+  timestamp: '2026-07-30T18:04:29.985227+00:00'
+- incident:
+    pod: unknown
+  problem: Deployment failed to reach a healthy state.
+  rootcause: Deployment failed to reach a healthy state.
+  action: Analyzed by PlatformOps AI
+  status: open
+  timestamp: '2026-07-30T18:04:48.299853+00:00'
+- incident:
+    pod: unknown
+  problem: Deployment failed to reach a healthy state.
+  rootcause: Deployment failed to reach a healthy state.
+  action: Analyzed by PlatformOps AI
+  status: open
+  timestamp: '2026-07-30T18:06:45.290901+00:00'
+- incident:
+    pod: unknown
+  problem: Deployment failed to reach a healthy state.
+  rootcause: Deployment failed to reach a healthy state.
+  action: Analyzed by PlatformOps AI
+  status: open
+  timestamp: '2026-07-30T18:13:58.381019+00:00'

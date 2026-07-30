@@ -1,65 +1,567 @@
-<!-- ====================================================== -->
-<!-- 🔧 PlatformOps AI Repair Result -->
-<!-- ====================================================== -->
+<!DOCTYPE html>
+<html lang="en">
 
-<hr>
+<head>
 
-<h2>🔧 PlatformOps AI Auto Repair</h2>
+    <meta charset="UTF-8">
 
-<div class="card">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    {% if result.success %}
+    <title>Auto Repair | PlatformOps AI</title>
 
-        <h3>✅ Repair Successful</h3>
+    <style>
 
-        <p class="success">{{ result.message }}</p>
+        * {
+            box-sizing: border-box;
+        }
 
-    {% else %}
+        body {
+            margin: 0;
+            padding: 30px;
+            background: #0d1117;
+            color: #f0f6fc;
+            font-family: Arial, Helvetica, sans-serif;
+        }
 
-        <h3>❌ Repair Failed</h3>
+        .container {
+            width: 100%;
+            max-width: 950px;
+            margin: 0 auto;
+        }
 
-        <p class="error">{{ result.message }}</p>
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
 
-    {% endif %}
+        .brand {
+            font-size: 24px;
+            font-weight: 700;
+        }
 
-    <table>
+        .subtitle {
+            margin-top: 5px;
+            color: #8b949e;
+            font-size: 14px;
+        }
 
-        <tr>
-            <th width="220">Action</th>
-            <td>{{ result.action }}</td>
-        </tr>
+        .status-badge {
+            padding: 8px 14px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+        }
 
-        <tr>
-            <th>Deployment</th>
-            <td>{{ result.deployment }}</td>
-        </tr>
+        .status-success {
+            background: rgba(63, 185, 80, 0.15);
+            color: #3fb950;
+            border: 1px solid rgba(63, 185, 80, 0.3);
+        }
 
-        <tr>
-            <th>Namespace</th>
-            <td>{{ result.namespace }}</td>
-        </tr>
+        .status-failed {
+            background: rgba(248, 81, 73, 0.15);
+            color: #f85149;
+            border: 1px solid rgba(248, 81, 73, 0.3);
+        }
 
-        <tr>
-            <th>Status</th>
+        .hero-card {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 18px;
+            padding: 30px;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
+            margin-bottom: 25px;
+        }
 
-            <td>
+        .hero-card h1 {
+            margin: 0 0 10px 0;
+            font-size: 32px;
+        }
 
-                {% if result.success %}
-                    <span class="success">🟢 Resolved</span>
-                {% else %}
-                    <span class="error">🔴 Failed</span>
-                {% endif %}
+        .hero-card p {
+            margin: 0;
+            color: #8b949e;
+            line-height: 1.6;
+        }
 
-            </td>
+        .success-title {
+            color: #3fb950;
+        }
 
-        </tr>
+        .error-title {
+            color: #f85149;
+        }
 
-    </table>
+        .flow {
+            display: grid;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .flow-step {
+            background: #0d1117;
+            border: 1px solid #21262d;
+            border-radius: 12px;
+            padding: 18px 20px;
+        }
+
+        .flow-label {
+            color: #8b949e;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 7px;
+        }
+
+        .flow-value {
+            color: #f0f6fc;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .arrow {
+            text-align: center;
+            color: #58a6ff;
+            font-size: 20px;
+        }
+
+        .details-card {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 18px;
+            padding: 25px;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        .details-card h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .detail-box {
+            background: #0d1117;
+            border: 1px solid #21262d;
+            border-radius: 10px;
+            padding: 15px;
+        }
+
+        .detail-label {
+            color: #8b949e;
+            font-size: 11px;
+            text-transform: uppercase;
+            margin-bottom: 7px;
+        }
+
+        .detail-value {
+            color: #f0f6fc;
+            font-size: 15px;
+            font-weight: 600;
+            word-break: break-word;
+        }
+
+        .healthy {
+            color: #3fb950;
+        }
+
+        .failed {
+            color: #f85149;
+        }
+
+        .message-box {
+            margin-top: 20px;
+            padding: 16px;
+            background: #0d1117;
+            border-left: 4px solid #58a6ff;
+            border-radius: 8px;
+            color: #c9d1d9;
+            line-height: 1.6;
+        }
+
+        .actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 11px 18px;
+            border-radius: 9px;
+            text-decoration: none;
+            font-weight: 600;
+            border: 1px solid #30363d;
+        }
+
+        .btn-primary {
+            background: #238636;
+            color: #ffffff;
+            border-color: #238636;
+        }
+
+        .btn-primary:hover {
+            background: #2ea043;
+        }
+
+        .btn-secondary {
+            background: #21262d;
+            color: #f0f6fc;
+        }
+
+        .btn-secondary:hover {
+            background: #30363d;
+        }
+
+        @media (max-width: 700px) {
+
+            body {
+                padding: 15px;
+            }
+
+            .topbar {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-card h1 {
+                font-size: 26px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <div class="topbar">
+
+        <div>
+
+            <div class="brand">
+                PlatformOps AI
+            </div>
+
+            <div class="subtitle">
+                Intelligent Kubernetes Operations
+            </div>
+
+        </div>
+
+
+        {% if result.success %}
+
+            <span class="status-badge status-success">
+                HEALTHY
+            </span>
+
+        {% else %}
+
+            <span class="status-badge status-failed">
+                ACTION REQUIRED
+            </span>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- =====================================================
+         REPAIR RESULT
+    ====================================================== -->
+
+    <div class="hero-card">
+
+        {% if result.success %}
+
+            <h1 class="success-title">
+                AUTO REPAIR COMPLETE
+            </h1>
+
+            <p>
+                PlatformOps AI successfully executed the recommended
+                Kubernetes recovery action.
+            </p>
+
+        {% else %}
+
+            <h1 class="error-title">
+                AUTO REPAIR FAILED
+            </h1>
+
+            <p>
+                PlatformOps AI attempted the recovery action,
+                but the deployment could not be confirmed as recovered.
+            </p>
+
+        {% endif %}
+
+
+        <!-- =================================================
+             REPAIR FLOW
+        ================================================== -->
+
+        <div class="flow">
+
+            <div class="flow-step">
+
+                <div class="flow-label">
+                    Problem Detected
+                </div>
+
+                <div class="flow-value">
+                    Kubernetes deployment requires recovery
+                </div>
+
+            </div>
+
+
+            <div class="arrow">
+                ↓
+            </div>
+
+
+            <div class="flow-step">
+
+                <div class="flow-label">
+                    AI Recommendation
+                </div>
+
+                <div class="flow-value">
+                    Restart deployment
+                </div>
+
+            </div>
+
+
+            <div class="arrow">
+                ↓
+            </div>
+
+
+            <div class="flow-step">
+
+                <div class="flow-label">
+                    Action Executed
+                </div>
+
+                <div class="flow-value">
+                    {{ result.action or "Deployment restart requested" }}
+                </div>
+
+            </div>
+
+
+            <div class="arrow">
+                ↓
+            </div>
+
+
+            <div class="flow-step">
+
+                <div class="flow-label">
+                    Result
+                </div>
+
+                <div class="flow-value">
+
+                    {% if result.success %}
+
+                        Pods recovered
+
+                    {% else %}
+
+                        Recovery could not be confirmed
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+            <div class="arrow">
+                ↓
+            </div>
+
+
+            <div class="flow-step">
+
+                <div class="flow-label">
+                    Final Status
+                </div>
+
+                <div class="flow-value">
+
+                    {% if result.success %}
+
+                        <span class="healthy">
+                            HEALTHY
+                        </span>
+
+                    {% else %}
+
+                        <span class="failed">
+                            ACTION REQUIRED
+                        </span>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         REPAIR DETAILS
+    ====================================================== -->
+
+    <div class="details-card">
+
+        <h2>
+            Repair Details
+        </h2>
+
+
+        <div class="details-grid">
+
+            <div class="detail-box">
+
+                <div class="detail-label">
+                    Deployment
+                </div>
+
+                <div class="detail-value">
+                    {{ deployment or result.deployment or "Unknown" }}
+                </div>
+
+            </div>
+
+
+            <div class="detail-box">
+
+                <div class="detail-label">
+                    Namespace
+                </div>
+
+                <div class="detail-value">
+                    {{ result.namespace or "Unknown" }}
+                </div>
+
+            </div>
+
+
+            <div class="detail-box">
+
+                <div class="detail-label">
+                    Action
+                </div>
+
+                <div class="detail-value">
+                    {{ result.action or "Deployment restart" }}
+                </div>
+
+            </div>
+
+
+            <div class="detail-box">
+
+                <div class="detail-label">
+                    Status
+                </div>
+
+                <div class="detail-value">
+
+                    {% if result.success %}
+
+                        <span class="healthy">
+                            Resolved
+                        </span>
+
+                    {% else %}
+
+                        <span class="failed">
+                            Failed
+                        </span>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        {% if result.message %}
+
+        <div class="message-box">
+
+            <strong>PlatformOps AI Response:</strong>
+
+            <br><br>
+
+            {{ result.message }}
+
+        </div>
+
+        {% endif %}
+
+
+        <!-- =================================================
+             NAVIGATION
+        ================================================== -->
+
+        <div class="actions">
+
+            <a
+                href="/"
+                class="btn btn-primary">
+
+                ← Back to Dashboard
+
+            </a>
+
+
+            <a
+                href="/history"
+                class="btn btn-secondary">
+
+                View Incident History
+
+            </a>
+
+        </div>
+
+    </div>
 
 </div>
 
-<br>
+</body>
 
-<a href="/">
-    <button>⬅ Back to Dashboard</button>
-</a>
+</html>

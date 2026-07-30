@@ -1,674 +1,1382 @@
-<!-- ====================================================== -->
-<!--  PlatformOps AI Deployment Investigation -->
-<!-- ====================================================== -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
 
-{% if report.investigations %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<hr>
+    <title>PlatformOps AI</title>
 
-<h2> PlatformOps AI Deployment Investigation</h2>
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
 
-<p>PlatformOps AI automatically investigated unhealthy Kubernetes deployments and generated the following incident reports.</p>
+</head>
 
-{% for item in report.investigations %}
+<body>
 
-<div class="card">
+<div class="container">
 
-    <h3> {{ item.title }}</h3>
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
 
-    <hr>
+    <header class="topbar">
 
-    <h4> Root Cause Analysis</h4>
+        <div class="brand">
 
-    <table>
+            <div class="brand-icon">
+                ⚡
+            </div>
 
-        <tr>
-            <th width="220">Issue</th>
-            <td>{{ item.issue }}</td>
-        </tr>
+            <div>
 
-        {% if item.description %}
-        <tr>
-            <th>Description</th>
-            <td>{{ item.description }}</td>
-        </tr>
+                <div class="brand-name">
+                    PlatformOps AI
+                </div>
+
+                <div class="brand-subtitle">
+                    Intelligent Kubernetes Operations
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="header-status">
+
+            <span class="status-dot"></span>
+
+            <span>
+                Cluster Connected
+            </span>
+
+        </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         HERO / OVERVIEW
+    ====================================================== -->
+
+    <section class="hero">
+
+        <div>
+
+            <div class="eyebrow">
+                PLATFORM OPERATIONS CENTER
+            </div>
+
+            <h1>
+                Kubernetes Intelligence
+            </h1>
+
+            <p>
+                Monitor infrastructure health, investigate incidents,
+                understand root causes and automate operational response.
+            </p>
+
+        </div>
+
+
+        <div class="hero-actions">
+
+            <form method="POST">
+
+                <button
+                    type="submit"
+                    class="btn btn-primary">
+
+                    🔍 Analyze Cluster
+
+                </button>
+
+            </form>
+
+            <a
+                href="/history"
+                class="btn">
+
+                🕘 Incident History
+
+            </a>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         CLUSTER OVERVIEW
+    ====================================================== -->
+
+    {% if report and report.health %}
+
+    <section class="section">
+
+        <div class="section-header">
+
+            <div>
+
+                <h2>
+                    Cluster Overview
+                </h2>
+
+                <p class="section-subtitle">
+                    Current operational state
+                </p>
+
+            </div>
+
+            <span class="badge badge-healthy">
+                ● LIVE
+            </span>
+
+        </div>
+
+
+        <div class="cards">
+
+            <div class="summary-card">
+
+                <div class="summary-label">
+                    Overall Health
+                </div>
+
+                <div class="summary-value">
+                    {{ report.health.score }}%
+                </div>
+
+                <div class="summary-meta">
+                    Platform health score
+                </div>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="summary-label">
+                    Running Pods
+                </div>
+
+                <div class="summary-value">
+                    {{ report.health.running_pods }}
+                </div>
+
+                <div class="summary-meta">
+                    Active workloads
+                </div>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="summary-label">
+                    Healthy Deployments
+                </div>
+
+                <div class="summary-value">
+                    {{ report.health.healthy_deployments }}
+                </div>
+
+                <div class="summary-meta">
+                    Available workloads
+                </div>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="summary-label">
+                    Unhealthy Deployments
+                </div>
+
+                <div class="summary-value">
+                    {{ report.health.unhealthy_deployments }}
+                </div>
+
+                <div class="summary-meta">
+                    Requires attention
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    {% endif %}
+
+
+    <!-- =====================================================
+         CURRENT SEVERITY
+    ====================================================== -->
+
+    {% if report and report.severity %}
+
+    <div class="severity-banner
+        {% if report.severity == 'CRITICAL' %}
+            severity-critical
+        {% elif report.severity == 'HIGH' %}
+            severity-high
+        {% elif report.severity == 'MEDIUM' %}
+            severity-medium
+        {% else %}
+            severity-low
         {% endif %}
+    ">
 
-        <tr>
-            <th>Business Impact</th>
-            <td>{{ item.impact }}</td>
-        </tr>
+        <div>
 
-        <tr>
-            <th>Severity</th>
+            <div class="eyebrow">
+                CURRENT INCIDENT SEVERITY
+            </div>
 
-            <td>
+            <div class="severity-title">
+                {{ report.severity }}
+            </div>
 
-                {% if item.severity == "CRITICAL" %}
-                    <span class="error">⚫ CRITICAL</span>
+        </div>
 
-                {% elif item.severity == "HIGH" %}
-                    <span class="error">🔴 HIGH</span>
 
-                {% elif item.severity == "MEDIUM" %}
-                    <span class="warning">🟠 MEDIUM</span>
+        <div class="severity-description">
 
-                {% else %}
-                    <span class="success">🟢 LOW</span>
+            {% if report.severity == "CRITICAL" %}
+                Immediate operational attention required.
+            {% elif report.severity == "HIGH" %}
+                High-priority infrastructure issue detected.
+            {% elif report.severity == "MEDIUM" %}
+                Operational issue requires investigation.
+            {% else %}
+                Cluster currently operating at low severity.
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
+
+    <!-- =====================================================
+         PROMETHEUS METRICS
+    ====================================================== -->
+
+    {% if report and report.metrics %}
+
+    <section class="section">
+
+        <div class="section-header">
+
+            <div>
+
+                <h2>
+                    Resource Utilization
+                </h2>
+
+                <p class="section-subtitle">
+                    Infrastructure telemetry from Prometheus
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="metric-grid">
+
+            <div class="metric-card">
+
+                <div class="metric-header">
+
+                    <span class="metric-title">
+                        CPU Usage
+                    </span>
+
+                    <span class="metric-live">
+                        LIVE
+                    </span>
+
+                </div>
+
+                <div class="metric-value">
+                    {{ report.metrics.cpu }}%
+                </div>
+
+                <div class="metric-bar">
+
+                    <div
+                        class="metric-bar-fill"
+                        style="width: {{ [report.metrics.cpu|default(0), 100]|min }}%;">
+                    </div>
+
+                </div>
+
+                <div class="metric-footer">
+                    Processor utilization
+                </div>
+
+            </div>
+
+
+            <div class="metric-card">
+
+                <div class="metric-header">
+
+                    <span class="metric-title">
+                        Memory Usage
+                    </span>
+
+                    <span class="metric-live">
+                        LIVE
+                    </span>
+
+                </div>
+
+                <div class="metric-value">
+                    {{ report.metrics.memory }}%
+                </div>
+
+                <div class="metric-bar">
+
+                    <div
+                        class="metric-bar-fill"
+                        style="width: {{ [report.metrics.memory|default(0), 100]|min }}%;">
+                    </div>
+
+                </div>
+
+                <div class="metric-footer">
+                    Memory utilization
+                </div>
+
+            </div>
+
+
+            <div class="metric-card">
+
+                <div class="metric-header">
+
+                    <span class="metric-title">
+                        Disk Usage
+                    </span>
+
+                    <span class="metric-live">
+                        LIVE
+                    </span>
+
+                </div>
+
+                <div class="metric-value">
+                    {{ report.metrics.disk }}%
+                </div>
+
+                <div class="metric-bar">
+
+                    <div
+                        class="metric-bar-fill"
+                        style="width: {{ [report.metrics.disk|default(0), 100]|min }}%;">
+                    </div>
+
+                </div>
+
+                <div class="metric-footer">
+                    Storage utilization
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    {% endif %}
+
+
+    <!-- =====================================================
+         ACTIVE INCIDENT
+    ====================================================== -->
+
+    {% if report and report.investigations %}
+
+    <section class="section">
+
+        <div class="section-header">
+
+            <div>
+
+                <h2>
+                    Active Incident
+                </h2>
+
+                <p class="section-subtitle">
+                    Highest-priority issue detected by PlatformOps AI
+                </p>
+
+            </div>
+
+        </div>
+
+
+        {% for item in report.investigations %}
+
+        <article class="incident-card">
+
+            <div class="incident-top">
+
+                <div>
+
+                    {% if item.severity == "CRITICAL" %}
+                        <span class="badge badge-critical">● CRITICAL</span>
+                    {% elif item.severity == "HIGH" %}
+                        <span class="badge badge-high">● HIGH</span>
+                    {% elif item.severity == "MEDIUM" %}
+                        <span class="badge badge-medium">● MEDIUM</span>
+                    {% else %}
+                        <span class="badge badge-low">● LOW</span>
+                    {% endif %}
+
+                    <div class="incident-title">
+                        {{ item.title }}
+                    </div>
+
+                    <div class="incident-subtitle">
+                        {{ item.issue }}
+                    </div>
+
+                </div>
+
+                <div class="incident-state">
+                    <span class="state-indicator"></span>
+                    Investigation Active
+                </div>
+
+            </div>
+
+
+            <div class="incident-stats">
+
+                <div class="incident-stat">
+                    <span>Issue</span>
+                    <strong>{{ item.issue }}</strong>
+                </div>
+
+                <div class="incident-stat">
+                    <span>Severity</span>
+                    <strong>{{ item.severity }}</strong>
+                </div>
+
+                <div class="incident-stat">
+                    <span>AI Confidence</span>
+                    <strong>
+                        {% if item.confidence %}
+                            {{ item.confidence }}
+                        {% else %}
+                            —
+                        {% endif %}
+                    </strong>
+                </div>
+
+                <div class="incident-stat">
+                    <span>Impact</span>
+                    <strong>{{ item.impact }}</strong>
+                </div>
+
+            </div>
+
+
+            <div class="investigation-grid">
+
+                <div class="card nested-card">
+
+                    <div class="card-heading">
+
+                        <div class="card-icon">◎</div>
+
+                        <div>
+                            <h3>Root Cause Analysis</h3>
+                            <p class="card-description">
+                                AI interpretation of the incident
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="info-grid">
+
+                        <div class="info-box">
+                            <span class="info-box-label">Problem</span>
+                            <span class="info-box-value">{{ item.issue }}</span>
+                        </div>
+
+                        {% if item.description %}
+                        <div class="info-box">
+                            <span class="info-box-label">Description</span>
+                            <span class="info-box-value">{{ item.description }}</span>
+                        </div>
+                        {% endif %}
+
+                        <div class="info-box">
+                            <span class="info-box-label">Business Impact</span>
+                            <span class="info-box-value">{{ item.impact }}</span>
+                        </div>
+
+                        <div class="info-box">
+                            <span class="info-box-label">AI Confidence</span>
+                            <span class="info-box-value">
+                                {% if item.confidence %}
+                                    {{ item.confidence }}
+                                {% else %}
+                                    Not available
+                                {% endif %}
+                            </span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="card nested-card">
+
+                    <div class="card-heading">
+
+                        <div class="card-icon">✦</div>
+
+                        <div>
+                            <h3>AI Recommendation</h3>
+                            <p class="card-description">
+                                Suggested operational response
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    {% if item.recommended_action %}
+                    <div class="recommendation-box">
+                        {{ item.recommended_action }}
+                    </div>
+                    {% endif %}
+
+                    {% if item.recommendations %}
+                    <ul class="recommendation-list">
+                        {% for recommendation in item.recommendations %}
+                        <li>{{ recommendation }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+            {% if item.evidence %}
+
+            <div class="card nested-card">
+
+                <div class="card-heading">
+
+                    <div class="card-icon">✓</div>
+
+                    <div>
+                        <h3>Evidence</h3>
+                        <p class="card-description">
+                            Signals used during investigation
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="evidence-grid">
+
+                    {% for evidence in item.evidence %}
+                    <div class="evidence-item">
+                        <span class="evidence-check">✓</span>
+                        <span>{{ evidence }}</span>
+                    </div>
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+            {% endif %}
+
+
+            {% if item.command %}
+
+            <details class="collapsible">
+
+                <summary>
+                    <span>Terminal Evidence</span>
+                    <span>+</span>
+                </summary>
+
+                <div class="collapsible-content">
+                    <pre>{{ item.command }}</pre>
+                </div>
+
+            </details>
+
+            {% endif %}
+
+
+            <div class="actions">
+
+                {% set repair_deployment =
+                    item.deployment
+                    or item.name
+                    or item.pod
+                    or item.title
+                %}
+
+                {% set repair_namespace =
+                    item.namespace
+                    or "default"
+                %}
+
+                {% if repair_deployment %}
+
+                    <a
+                        href="{{ url_for(
+                            'repair',
+                            namespace=repair_namespace,
+                            deployment=repair_deployment
+                        ) }}"
+                        class="btn btn-danger"
+                        onclick="return confirm('Are you sure you want PlatformOps AI to restart this deployment?');">
+
+                        🔧 Auto Repair
+
+                    </a>
 
                 {% endif %}
 
-            </td>
+            </div>
+                
 
-        </tr>
+            </div>
 
-        {% if item.confidence %}
+        </article>
 
-        <tr>
+        {% endfor %}
 
-            <th>AI Confidence</th>
+    </section>
 
-            <td>{{ item.confidence }}</td>
+    {% endif %}
 
-        </tr>
+
+    <!-- =====================================================
+         INCIDENT TIMELINE
+    ====================================================== -->
+
+    {% if report and report.timeline %}
+
+    <section class="section">
+
+        <div class="section-header">
+
+            <div>
+                <h2>Incident Timeline</h2>
+                <p class="section-subtitle">
+                    AI reconstruction of Kubernetes activity
+                </p>
+            </div>
+
+        </div>
+
+
+        {% if report.timeline_summary %}
+
+        <div class="ai-summary">
+
+            <div class="ai-box">
+                <div class="ai-box-label">Events Analyzed</div>
+                <div class="ai-box-value">
+                    {{ report.timeline_summary.events }}
+                </div>
+            </div>
+
+            <div class="ai-box">
+                <div class="ai-box-label">Current State</div>
+                <div class="ai-box-value">
+                    {{ report.timeline_summary.current_state }}
+                </div>
+            </div>
+
+            <div class="ai-box">
+                <div class="ai-box-label">Severity</div>
+                <div class="ai-box-value">
+                    {{ report.timeline_summary.severity }}
+                </div>
+            </div>
+
+        </div>
 
         {% endif %}
 
-    </table>
 
-    <hr>
+        <div class="card timeline-card">
 
-    <h4> Evidence</h4>
+            <div class="timeline">
 
-    <ul>
+                {% for event in report.timeline %}
 
-        {% for evidence in item.evidence %}
+                <div class="timeline-item">
 
-        <li>{{ evidence }}</li>
+                    <div class="timeline-dot"></div>
+
+                    <div class="timeline-time">
+                        {{ event.time }}
+                    </div>
+
+                    <div class="timeline-title">
+                        {% if event.icon %}
+                            {{ event.icon }}
+                        {% else %}
+                            ●
+                        {% endif %}
+                        {{ event.event }}
+                    </div>
+
+                    <div class="timeline-meta">
+                        {{ event.namespace }} · {{ event.kind }}
+                    </div>
+
+                    <div class="timeline-description">
+                        {{ event.message }}
+                    </div>
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+    </section>
+
+    {% endif %}
+
+
+    <!-- =====================================================
+         KUBERNETES DEPLOYMENTS
+    ====================================================== -->
+
+    {% if report and report.deployments %}
+
+    <section class="section">
+
+        <div class="section-header">
+
+            <div>
+                <h2>Kubernetes Deployments</h2>
+                <p class="section-subtitle">
+                    Workload health and restart activity
+                </p>
+            </div>
+
+            <span class="section-count">
+                {{ report.deployments|length }} deployments
+            </span>
+
+        </div>
+
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Namespace</th>
+                        <th>Deployment</th>
+                        <th>Ready</th>
+                        <th>Health</th>
+                        <th>Severity</th>
+                        <th>Restarts</th>
+                        <th>Warnings</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                {% for deployment in report.deployments %}
+
+                    <tr>
+
+                        <td>
+                            <span class="namespace-tag">
+                                {{ deployment.namespace }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <strong>{{ deployment.name }}</strong>
+                        </td>
+
+                        <td>
+                            {{ deployment.ready }}
+                        </td>
+
+                        <td>
+
+                            {% if deployment.status == "Healthy" %}
+                                <span class="badge badge-healthy">
+                                    ● Healthy
+                                </span>
+                            {% else %}
+                                <span class="badge badge-danger">
+                                    ● Unhealthy
+                                </span>
+                            {% endif %}
+
+                        </td>
+
+                        <!--
+                            CURRENT DEPLOYMENT SEVERITY
+
+                            Healthy deployments are LOW regardless of
+                            historical restart count.
+
+                            Only unhealthy deployments escalate based on
+                            restart count and warning activity.
+                        -->
+
+                        <td>
+
+                            {% if deployment.status == "Healthy" %}
+
+                                <span class="badge badge-low">
+                                    LOW
+                                </span>
+
+                            {% elif deployment.restart_count >= 10 %}
+
+                                <span class="badge badge-critical">
+                                    CRITICAL
+                                </span>
+
+                            {% elif deployment.restart_count >= 5 %}
+
+                                <span class="badge badge-high">
+                                    HIGH
+                                </span>
+
+                            {% elif deployment.warning_events > 0 %}
+
+                                <span class="badge badge-medium">
+                                    MEDIUM
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge badge-low">
+                                    LOW
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+                            {{ deployment.restart_count }}
+                        </td>
+
+                        <td>
+                            {{ deployment.warning_events }}
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+    {% endif %}
+
+
+    <!-- =====================================================
+         PROBLEM PODS
+    ====================================================== -->
+
+    {% if report and report.pods and report.pods.problems %}
+
+    <section class="section">
+
+        <div class="section-header">
+
+            <div>
+                <h2>Problem Pods</h2>
+                <p class="section-subtitle">
+                    Kubernetes workloads requiring attention
+                </p>
+            </div>
+
+            <span class="badge badge-danger">
+                {{ report.pods.problems|length }} Issues
+            </span>
+
+        </div>
+
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Namespace</th>
+                        <th>Pod</th>
+                        <th>Status</th>
+                        <th>Reason</th>
+                        <th>AI Verdict</th>
+                        <th>Node</th>
+                        <th>Pod IP</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                {% for pod in report.pods.problems %}
+
+                    <tr>
+
+                        <td>
+                            <span class="namespace-tag">
+                                {{ pod.namespace }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <strong>{{ pod.name }}</strong>
+                        </td>
+
+                        <td>
+                            {{ pod.phase }}
+                        </td>
+
+                        <td>
+                            <span class="badge badge-danger">
+                                {{ pod.reason }}
+                            </span>
+                        </td>
+
+                        <td>
+
+                            {% if pod.reason == "CrashLoopBackOff" %}
+                                Container repeatedly crashes after startup.
+                            {% elif pod.reason == "ImagePullBackOff" %}
+                                Container image cannot be downloaded.
+                            {% elif pod.reason == "OOMKilled" %}
+                                Container exceeded its memory limit.
+                            {% elif pod.reason == "Pending" %}
+                                Pod cannot be scheduled onto a node.
+                            {% else %}
+                                Requires further investigation.
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+                            {{ pod.node }}
+                        </td>
+
+                        <td>
+                            {{ pod.pod_ip }}
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+    {% else %}
+
+    <section class="section">
+
+        <div class="healthy-panel">
+
+            <div class="healthy-icon">
+                ✓
+            </div>
+
+            <div>
+
+                <h3>
+                    Cluster Workloads Healthy
+                </h3>
+
+                <p>
+                    PlatformOps AI did not detect unhealthy pods
+                    during the latest investigation.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    {% endif %}
+
+
+    <!-- =====================================================
+         NAMESPACES
+    ====================================================== -->
+
+    {% if report and report.namespaces %}
+
+    <section class="section">
+
+        <div class="section-header">
+
+            <div>
+                <h2>Kubernetes Namespaces</h2>
+                <p class="section-subtitle">
+                    Logical cluster environments
+                </p>
+            </div>
+
+        </div>
+
+
+        <div class="resource-grid">
+
+        {% for namespace in report.namespaces %}
+
+            <div class="resource-card">
+
+                <div class="resource-icon">
+                    ◇
+                </div>
+
+                <div class="resource-content">
+
+                    <div class="resource-name">
+                        {{ namespace.name }}
+                    </div>
+
+                    <div class="resource-meta">
+                        Status: {{ namespace.status }}
+                    </div>
+
+                    <div class="resource-age">
+                        Age: {{ namespace.age }}
+                    </div>
+
+                </div>
+
+                <span class="status-pill">
+                    {{ namespace.status }}
+                </span>
+
+            </div>
 
         {% endfor %}
 
-    </ul>
+        </div>
 
-    <hr>
+    </section>
 
-    <h4> AI Recommendation</h4>
-
-    {% if item.recommended_action %}
-    <p>{{ item.recommended_action }}</p>
     {% endif %}
 
-    {% if item.recommendations %}
-    <ul>
-        {% for recommendation in item.recommendations %}
-        <li>{{ recommendation }}</li>
+
+    <!-- =====================================================
+         SERVICES
+    ====================================================== -->
+
+    {% if report and report.services %}
+
+    <section class="section">
+
+        <div class="section-header">
+
+            <div>
+                <h2>Kubernetes Services</h2>
+                <p class="section-subtitle">
+                    Application networking endpoints
+                </p>
+            </div>
+
+        </div>
+
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Namespace</th>
+                        <th>Service</th>
+                        <th>Type</th>
+                        <th>Cluster IP</th>
+                        <th>Ports</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                {% for service in report.services %}
+
+                    <tr>
+
+                        <td>
+                            <span class="namespace-tag">
+                                {{ service.namespace }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <strong>{{ service.name }}</strong>
+                        </td>
+
+                        <td>
+                            {{ service.type }}
+                        </td>
+
+                        <td>
+                            {{ service.cluster_ip }}
+                        </td>
+
+                        <td>
+                            {{ service.ports }}
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+    {% endif %}
+
+
+    <!-- =====================================================
+         CLUSTER NODES
+    ====================================================== -->
+
+    {% if report and report.nodes %}
+
+    <section class="section">
+
+        <div class="section-header">
+
+            <div>
+                <h2>Cluster Nodes</h2>
+                <p class="section-subtitle">
+                    Kubernetes compute infrastructure
+                </p>
+            </div>
+
+        </div>
+
+
+        <div class="node-grid">
+
+        {% for node in report.nodes %}
+
+            <div class="node-card">
+
+                <div class="node-header">
+
+                    <div class="node-icon">
+                        ◉
+                    </div>
+
+                    {% if node.status == "Ready" %}
+                        <span class="badge badge-healthy">
+                            READY
+                        </span>
+                    {% else %}
+                        <span class="badge badge-danger">
+                            NOT READY
+                        </span>
+                    {% endif %}
+
+                </div>
+
+
+                <div class="node-name">
+                    {{ node.name }}
+                </div>
+
+
+                <div class="node-details">
+
+                    <div>
+                        <span>Role</span>
+                        <strong>{{ node.roles }}</strong>
+                    </div>
+
+                    <div>
+                        <span>Kubernetes</span>
+                        <strong>{{ node.version }}</strong>
+                    </div>
+
+                </div>
+
+            </div>
+
         {% endfor %}
-    </ul>
+
+        </div>
+
+    </section>
+
     {% endif %}
 
-    <hr>
 
-    <h4> Recommended Commands</h4>
+    <!-- =====================================================
+         LATEST POD LOGS
+    ====================================================== -->
 
-    <pre>{{ item.command }}</pre>
+    {% if report and report.pods and report.pods.logs %}
 
-    {% if item.title %}
-    <a href="/repair/{{ item.title }}">
-        <button>🔧 Auto Repair Deployment</button>
-    </a>
+    <section class="section">
+
+        <details class="collapsible">
+
+            <summary>
+                <span>📄 Latest Pod Logs</span>
+                <span>+</span>
+            </summary>
+
+            <div class="collapsible-content">
+                <pre>{{ report.pods.logs }}</pre>
+            </div>
+
+        </details>
+
+    </section>
+
     {% endif %}
 
-</div>
 
-<br>
+    <!-- =====================================================
+         AI EXECUTIVE SUMMARY
+    ====================================================== -->
 
-{% endfor %}
+    {% if report and report.health %}
 
-{% endif %}
+    <section class="section">
 
-<!-- ====================================================== -->
-<!-- 🕒 AI Incident Timeline -->
-<!-- ====================================================== -->
+        <div class="section-header">
 
-{% if report.timeline %}
+            <div>
+                <h2>AI Executive Summary</h2>
+                <p class="section-subtitle">
+                    Operational summary generated from cluster telemetry
+                </p>
+            </div>
 
-<hr>
+        </div>
 
-<h2>🕒 AI Incident Timeline</h2>
 
-<p>
-PlatformOps AI reconstructed the sequence of Kubernetes events that led
-to the current cluster state.
-</p>
+        <div class="executive-card">
 
-{% if report.timeline_summary %}
+            <div class="executive-main">
 
-<div class="card">
+                <div class="executive-icon">
+                    ✦
+                </div>
 
-<h3>🧠 AI Timeline Summary</h3>
+                <div>
 
-<table>
+                    <h3>
+                        PlatformOps AI Investigation Complete
+                    </h3>
 
-<tr>
-<th width="220">Summary</th>
-<td>{{ report.timeline_summary.summary }}</td>
-</tr>
+                    <p>
+                        The platform completed a Kubernetes health,
+                        observability and incident analysis cycle.
+                    </p>
 
-<tr>
-<th>Current State</th>
-<td>{{ report.timeline_summary.current_state }}</td>
-</tr>
+                </div>
 
-<tr>
-<th>Severity</th>
+            </div>
 
-<td>
 
-{% if report.timeline_summary.severity == "CRITICAL" %}
-⚫ Critical
+            <div class="executive-grid">
 
-{% elif report.timeline_summary.severity == "HIGH" %}
-🔴 High
+                <div>
+                    <span>Running Pods</span>
+                    <strong>{{ report.health.running_pods }}</strong>
+                </div>
 
-{% elif report.timeline_summary.severity == "MEDIUM" %}
-🟠 Medium
+                <div>
+                    <span>Healthy Deployments</span>
+                    <strong>{{ report.health.healthy_deployments }}</strong>
+                </div>
 
-{% else %}
-🟢 Low
+                <div>
+                    <span>Unhealthy Deployments</span>
+                    <strong>{{ report.health.unhealthy_deployments }}</strong>
+                </div>
 
-{% endif %}
+                <div>
+                    <span>Overall Health</span>
+                    <strong>{{ report.health.score }}%</strong>
+                </div>
 
-</td>
+            </div>
 
-</tr>
+        </div>
 
-<tr>
-<th>Total Events</th>
-<td>{{ report.timeline_summary.events }}</td>
-</tr>
+    </section>
 
-</table>
+    {% endif %}
 
-</div>
 
-<br>
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
 
-{% endif %}
+    <footer class="footer">
 
-{% for event in report.timeline %}
+        <div>
+            PlatformOps AI
+        </div>
 
-<div class="card">
+        <div>
+            Kubernetes Intelligence · Observability · AI Operations
+        </div>
 
-<h3>{{ event.icon }} {{ event.time }}</h3>
+    </footer>
 
-<table>
-
-<tr>
-<th width="220">Namespace</th>
-<td>{{ event.namespace }}</td>
-</tr>
-
-<tr>
-<th>Resource</th>
-<td>{{ event.resource }}</td>
-</tr>
-
-<tr>
-<th>Resource Type</th>
-<td>{{ event.kind }}</td>
-</tr>
-
-<tr>
-<th>Event</th>
-<td><strong>{{ event.event }}</strong></td>
-</tr>
-
-<tr>
-<th>Description</th>
-<td>{{ event.message }}</td>
-</tr>
-
-<tr>
-<th>Severity</th>
-
-<td>
-
-{% if event.severity == "CRITICAL" %}
-⚫ Critical
-
-{% elif event.severity == "HIGH" %}
-🔴 High
-
-{% elif event.severity == "MEDIUM" %}
-🟠 Medium
-
-{% else %}
-🟢 Low
-
-{% endif %}
-
-</td>
-
-</tr>
-
-</table>
 
 </div>
 
-<div style="text-align:center;font-size:28px;padding:5px;">⬇️</div>
-
-{% endfor %}
-
-{% endif %}
-
-<hr>
-
-<h2>🚀 Kubernetes Deployments</h2>
-
-<table>
-
-<thead>
-
-<tr>
-
-<th>Namespace</th>
-<th>Deployment</th>
-<th>Ready</th>
-<th>Health</th>
-<th>Severity</th>
-<th>Restarts</th>
-<th>Warnings</th>
-
-</tr>
-
-</thead>
-
-<tbody>
-
-{% for deployment in report.deployments %}
-
-<tr>
-
-<td>{{ deployment.namespace }}</td>
-<td><strong>{{ deployment.name }}</strong></td>
-<td>{{ deployment.ready }}</td>
-
-<td>
-
-{% if deployment.status=="Healthy" %}
-
-🟢 Healthy
-
-{% else %}
-
-🔴 Unhealthy
-
-{% endif %}
-
-</td>
-
-<td>
-
-{% if deployment.restart_count >= 10 %}
-
-⚫ Critical
-
-{% elif deployment.restart_count >= 5 %}
-
-🔴 High
-
-{% elif deployment.warning_events > 0 %}
-
-🟠 Medium
-
-{% else %}
-
-🟢 Low
-
-{% endif %}
-
-</td>
-
-<td>{{ deployment.restart_count }}</td>
-<td>{{ deployment.warning_events }}</td>
-
-</tr>
-
-{% endfor %}
-
-</tbody>
-
-</table>
-
-<hr>
-
-<h2>☸️ Kubernetes Namespaces</h2>
-
-<table>
-
-<thead>
-
-<tr>
-
-<th>Name</th>
-<th>Status</th>
-<th>Age</th>
-
-</tr>
-
-</thead>
-
-<tbody>
-
-{% for namespace in report.namespaces %}
-
-<tr>
-
-<td>{{ namespace.name }}</td>
-<td>{{ namespace.status }}</td>
-<td>{{ namespace.age }}</td>
-
-</tr>
-
-{% endfor %}
-
-</tbody>
-
-</table>
-
-<hr>
-
-<h2>🌐 Kubernetes Services</h2>
-
-<table>
-
-<thead>
-
-<tr>
-
-<th>Namespace</th>
-<th>Name</th>
-<th>Type</th>
-<th>Cluster IP</th>
-<th>Ports</th>
-
-</tr>
-
-</thead>
-
-<tbody>
-
-{% for service in report.services %}
-
-<tr>
-
-<td>{{ service.namespace }}</td>
-<td>{{ service.name }}</td>
-<td>{{ service.type }}</td>
-<td>{{ service.cluster_ip }}</td>
-<td>{{ service.ports }}</td>
-
-</tr>
-
-{% endfor %}
-
-</tbody>
-
-</table>
-
-<hr>
-
-<h2>🖥️ Cluster Nodes</h2>
-
-<table>
-
-<thead>
-
-<tr>
-
-<th>Name</th>
-<th>Status</th>
-<th>Role</th>
-<th>Kubernetes Version</th>
-
-</tr>
-
-</thead>
-
-<tbody>
-
-{% for node in report.nodes %}
-
-<tr>
-
-<td>{{ node.name }}</td>
-
-<td>
-
-{% if node.status=="Ready" %}
-
-🟢 Ready
-
-{% else %}
-
-🔴 Not Ready
-
-{% endif %}
-
-</td>
-
-<td>{{ node.roles }}</td>
-<td>{{ node.version }}</td>
-
-</tr>
-
-{% endfor %}
-
-</tbody>
-
-</table>
-
-{% if report and report.pods.problems %}
-
-<hr>
-
-<h2>⚠️ Problem Pods</h2>
-
-<table>
-
-<thead>
-
-<tr>
-
-<th>Namespace</th>
-<th>Pod</th>
-<th>Status</th>
-<th>Reason</th>
-<th>AI Verdict</th>
-<th>Node</th>
-<th>Host IP</th>
-<th>Pod IP</th>
-
-</tr>
-
-</thead>
-
-<tbody>
-
-{% for pod in report.pods.problems %}
-
-<tr>
-
-<td>{{ pod.namespace }}</td>
-<td>{{ pod.name }}</td>
-<td>{{ pod.phase }}</td>
-<td>{{ pod.reason }}</td>
-
-<td>
-
-{% if pod.reason == "CrashLoopBackOff" %}
-
-Container repeatedly crashes after startup.
-
-{% elif pod.reason == "ImagePullBackOff" %}
-
-Container image cannot be downloaded.
-
-{% elif pod.reason == "OOMKilled" %}
-
-Container exceeded memory limit.
-
-{% elif pod.reason == "Pending" %}
-
-Pod cannot be scheduled onto a node.
-
-{% else %}
-
-Requires further investigation.
-
-{% endif %}
-
-</td>
-
-<td>{{ pod.node }}</td>
-<td>{{ pod.host_ip }}</td>
-<td>{{ pod.pod_ip }}</td>
-
-</tr>
-
-{% endfor %}
-
-</tbody>
-
-</table>
-
-{% else %}
-
-<hr>
-
-<div class="card">
-
-<h2>✅ Cluster Status</h2>
-
-<p>No unhealthy Pods were detected.</p>
-
-</div>
-
-{% endif %}
-
-{% if report.pods.logs %}
-
-<hr>
-
-<h2>📄 Latest Pod Logs</h2>
-
-<div class="card">
-
-<pre>{{ report.pods.logs }}</pre>
-
-</div>
-
-{% endif %}
-
-<hr>
-
-<h2>📈 Prometheus Metrics</h2>
-
-<div class="card">
-<h3>🖥 CPU Usage</h3>
-<h1>{{ report.metrics.cpu }}{{ '%' if report.metrics.cpu is not none else '' }}</h1>
-</div>
-
-<div class="card">
-<h3>🧠 Memory Usage</h3>
-<h1>{{ report.metrics.memory }}{{ '%' if report.metrics.memory is not none else '' }}</h1>
-</div>
-
-<div class="card">
-<h3>💾 Disk Usage</h3>
-<h1>{{ report.metrics.disk }}{{ '%' if report.metrics.disk is not none else '' }}</h1>
-</div>
-
-{% if report.metrics.network %}
-<div class="card">
-<h3>🌐 Network</h3>
-<h1>{{ report.metrics.network }}</h1>
-</div>
-{% endif %}
-
-{% if report.metrics.items() %}
-<br>
-<table>
-<thead>
-<tr>
-<th>Metric</th>
-<th>Value</th>
-</tr>
-</thead>
-<tbody>
-{% for metric,value in report.metrics.items() %}
-<tr>
-<td>{{ metric }}</td>
-<td>{{ value }}</td>
-</tr>
-{% endfor %}
-</tbody>
-</table>
-{% endif %}
-
-{% if report.health %}
-
-<hr>
-
-<h2>📋 AI Executive Summary</h2>
-
-<div class="card">
-
-<h3>Today's Summary</h3>
-
-<p>PlatformOps AI completed a full Kubernetes investigation.</p>
-
-<ul>
-<li>Pods Running: {{ report.health.running_pods }}</li>
-<li>Healthy Deployments: {{ report.health.healthy_deployments }}</li>
-<li>Unhealthy Deployments: {{ report.health.unhealthy_deployments }}</li>
-<li>Current Severity: {{ report.severity }}</li>
-<li>Overall Health: {{ report.health.score }}%</li>
-</ul>
-
-</div>
-
-{% elif report.investigations %}
-
-<hr>
-
-<h2>📋 PlatformOps AI Incident Summary</h2>
-
-{% for item in report.investigations %}
-
-<div class="card">
-
-<h3>{{ item.title }}</h3>
-
-<p><strong>Root Cause</strong></p>
-<p>{{ item.issue }}</p>
-
-<p><strong>Business Impact</strong></p>
-<p>{{ item.impact }}</p>
-
-<p><strong>Severity</strong></p>
-<p>{{ item.severity }}</p>
-
-{% if item.confidence %}
-
-<p><strong>AI Confidence</strong></p>
-
-<p>{{ item.confidence }}</p>
-
-{% endif %}
-
-</div>
-
-{% endfor %}
-
-{% endif %}
+</body>
+</html>

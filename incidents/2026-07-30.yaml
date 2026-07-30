@@ -1,0 +1,55 @@
+- incident:
+    pod: unknown
+  problem: Deployment failed to reach a healthy state.
+  rootcause: Deployment failed to reach a healthy state.
+  action: Analyzed by PlatformOps AI
+  status: open
+  severity: HIGH
+  timestamp: '2026-07-30T18:21:36.074430+00:00'
+- incident:
+    pod: unknown
+  problem: Deployment failed to reach a healthy state.
+  rootcause: Deployment failed to reach a healthy state.
+  action: Analyzed by PlatformOps AI
+  status: open
+  severity: HIGH
+  timestamp: '2026-07-30T18:53:07.293686+00:00'
+- incident:
+    pod: unknown
+  problem: Deployment failed to reach a healthy state.
+  rootcause: Deployment failed to reach a healthy state.
+  action: Analyzed by PlatformOps AI
+  status: open
+  severity: HIGH
+  timestamp: '2026-07-30T18:55:04.498142+00:00'
+- incident:
+    pod: argocd-applicationset-controller
+  problem: AI Auto Repair
+  rootcause: PlatformOps AI Automatic Repair
+  action: '(404)
+
+    Reason: Not Found
+
+    HTTP response headers: HTTPHeaderDict({''Audit-Id'': ''da026f4a-a283-4602-b3ed-13b4b4dc510b'',
+    ''Cache-Control'': ''no-cache, private'', ''Content-Type'': ''application/json'',
+    ''X-Kubernetes-Pf-Flowschema-Uid'': ''6c187a11-7869-45c6-af25-5fac14b86a31'',
+    ''X-Kubernetes-Pf-Prioritylevel-Uid'': ''73562ba5-ffc6-4384-b17c-a6aeee10a062'',
+    ''Date'': ''Thu, 30 Jul 2026 18:56:50 GMT'', ''Content-Length'': ''266''})
+
+    HTTP response body: {"kind":"Status","apiVersion":"v1","metadata":{},"status":"Failure","message":"deployments.apps
+    \"argocd-applicationset-controller\" not found","reason":"NotFound","details":{"name":"argocd-applicationset-controller","group":"apps","kind":"deployments"},"code":404}
+
+
+    '
+  status: failed
+  severity: HIGH
+  timestamp: '2026-07-30T18:56:50.329310+00:00'
+- incident:
+    pod: argocd-applicationset-controller
+  problem: AI Auto Repair
+  rootcause: PlatformOps AI Automatic Repair
+  action: 'Deployment ''argocd-applicationset-controller'' restarted successfully
+    in namespace ''argocd''. Recovery confirmed: 1/1 replicas ready.'
+  status: resolved
+  severity: HIGH
+  timestamp: '2026-07-30T19:50:08.828233+00:00'

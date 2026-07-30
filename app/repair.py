@@ -1,3 +1,4 @@
+import time
 from datetime import datetime, timezone
 
 from kubernetes import client, config
@@ -5,7 +6,7 @@ from kubernetes.config.config_exception import ConfigException
 
 
 # ==========================================================
-# Load Kubernetes Configuration
+# Kubernetes Configuration
 # ==========================================================
 
 def _load_k8s_config():
@@ -24,12 +25,151 @@ def _load_k8s_config():
 
 
 # ==========================================================
+# Deployment Recovery Verification
+# ==========================================================
+
+def _wait_for_deployment_recovery(
+    apps,
+    core,
+    name,
+    namespace,
+    target_generation,
+    timeout=60,
+    interval=2
+):
+    """
+    Wait for the deployment rollout to complete and verify
+    that the deployment and its pods are ready.
+    """
+
+    start_time = time.time()
+
+    while time.time() - start_time < timeout:
+
+        try:
+
+            deployment = apps.read_namespaced_deployment(
+                name=name,
+                namespace=namespace
+            )
+
+            status = deployment.status
+            spec = deployment.spec
+
+            desired_replicas = spec.replicas or 0
+            ready_replicas = status.ready_replicas or 0
+            available_replicas = status.available_replicas or 0
+            updated_replicas = status.updated_replicas or 0
+            observed_generation = (
+                status.observed_generation or 0
+            )
+
+            deployment_ready = (
+                observed_generation >= target_generation
+                and updated_replicas >= desired_replicas
+                and ready_replicas >= desired_replicas
+                and available_replicas >= desired_replicas
+            )
+
+            # --------------------------------------------------
+            # Verify pod readiness
+            # --------------------------------------------------
+
+            pods_ready = True
+            running_pods = 0
+
+            selector = {}
+
+            if (
+                deployment.spec
+                and deployment.spec.selector
+                and deployment.spec.selector.match_labels
+            ):
+
+                selector = deployment.spec.selector.match_labels
+
+            if selector:
+
+                label_selector = ",".join(
+                    f"{key}={value}"
+                    for key, value in selector.items()
+                )
+
+                pods = core.list_namespaced_pod(
+                    namespace=namespace,
+                    label_selector=label_selector
+                ).items
+
+                if desired_replicas > 0:
+
+                    running_pods = sum(
+                        1
+                        for pod in pods
+                        if pod.status.phase == "Running"
+                    )
+
+                    ready_pods = 0
+
+                    for pod in pods:
+
+                        if pod.status.phase != "Running":
+                            continue
+
+                        conditions = (
+                            pod.status.conditions or []
+                        )
+
+                        is_ready = any(
+                            condition.type == "Ready"
+                            and condition.status == "True"
+                            for condition in conditions
+                        )
+
+                        if is_ready:
+                            ready_pods += 1
+
+                    pods_ready = (
+                        running_pods >= desired_replicas
+                        and ready_pods >= desired_replicas
+                    )
+
+            # --------------------------------------------------
+            # Final recovery confirmation
+            # --------------------------------------------------
+
+            if deployment_ready and pods_ready:
+
+                return {
+                    "recovered": True,
+                    "desired_replicas": desired_replicas,
+                    "ready_replicas": ready_replicas,
+                    "available_replicas": available_replicas,
+                    "updated_replicas": updated_replicas,
+                    "running_pods": running_pods
+                }
+
+        except Exception:
+            pass
+
+        time.sleep(interval)
+
+    return {
+        "recovered": False,
+        "message": (
+            "Deployment rollout did not reach the required "
+            "ready state within the recovery timeout."
+        )
+    }
+
+
+# ==========================================================
 # Restart Deployment
 # ==========================================================
 
 def restart_deployment(name, namespace="default"):
     """
-    Perform a rolling restart of a deployment.
+    Perform a rolling restart of a deployment and verify
+    that Kubernetes successfully recovers it.
     """
 
     try:
@@ -37,8 +177,28 @@ def restart_deployment(name, namespace="default"):
         _load_k8s_config()
 
         apps = client.AppsV1Api()
+        core = client.CoreV1Api()
 
-        timestamp = datetime.now(timezone.utc).isoformat()
+        # --------------------------------------------------
+        # Confirm deployment exists in the requested namespace
+        # --------------------------------------------------
+
+        deployment = apps.read_namespaced_deployment(
+            name=name,
+            namespace=namespace
+        )
+
+        target_generation = (
+            deployment.metadata.generation or 0
+        )
+
+        # --------------------------------------------------
+        # Trigger rolling restart
+        # --------------------------------------------------
+
+        timestamp = datetime.now(
+            timezone.utc
+        ).isoformat()
 
         body = {
             "spec": {
@@ -52,19 +212,76 @@ def restart_deployment(name, namespace="default"):
             }
         }
 
-        apps.patch_namespaced_deployment(
-            name=name,
-            namespace=namespace,
-            body=body
+        patched_deployment = (
+            apps.patch_namespaced_deployment(
+                name=name,
+                namespace=namespace,
+                body=body
+            )
         )
 
+        target_generation = (
+            patched_deployment.metadata.generation
+            or target_generation
+        )
+
+        # --------------------------------------------------
+        # Wait for recovery
+        # --------------------------------------------------
+
+        recovery = _wait_for_deployment_recovery(
+            apps=apps,
+            core=core,
+            name=name,
+            namespace=namespace,
+            target_generation=target_generation
+        )
+
+        # --------------------------------------------------
+        # Recovery confirmed
+        # --------------------------------------------------
+
+        if recovery.get("recovered"):
+
+            desired = recovery.get(
+                "desired_replicas",
+                0
+            )
+
+            ready = recovery.get(
+                "ready_replicas",
+                0
+            )
+
+            return {
+                "success": True,
+                "action": "Restart Deployment",
+                "deployment": name,
+                "namespace": namespace,
+                "status": "HEALTHY",
+                "recovery_confirmed": True,
+                "message": (
+                    f"Deployment '{name}' restarted successfully "
+                    f"in namespace '{namespace}'. "
+                    f"Recovery confirmed: {ready}/{desired} "
+                    f"replicas ready."
+                )
+            }
+
+        # --------------------------------------------------
+        # Restart happened but recovery failed
+        # --------------------------------------------------
+
         return {
-            "success": True,
+            "success": False,
             "action": "Restart Deployment",
             "deployment": name,
             "namespace": namespace,
-            "message": (
-                f"Deployment '{name}' restarted successfully."
+            "status": "ACTION REQUIRED",
+            "recovery_confirmed": False,
+            "message": recovery.get(
+                "message",
+                "Deployment restart completed but recovery could not be confirmed."
             )
         }
 
@@ -75,6 +292,8 @@ def restart_deployment(name, namespace="default"):
             "action": "Restart Deployment",
             "deployment": name,
             "namespace": namespace,
+            "status": "ACTION REQUIRED",
+            "recovery_confirmed": False,
             "message": str(e)
         }
 
@@ -112,7 +331,8 @@ def scale_deployment(name, replicas, namespace="default"):
             "deployment": name,
             "namespace": namespace,
             "message": (
-                f"Deployment scaled to {replicas} replicas."
+                f"Deployment '{name}' scaled to "
+                f"{replicas} replicas."
             )
         }
 
@@ -313,6 +533,7 @@ def auto_repair(root_cause, deployment, namespace="default"):
         "deployment": deployment,
         "namespace": namespace,
         "message": (
-            "PlatformOps AI could not determine an automatic repair."
+            "PlatformOps AI could not determine "
+            "an automatic repair."
         )
     }
